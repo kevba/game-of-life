@@ -1,24 +1,27 @@
-import { TableCell } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 import React from 'react';
 
 interface ICellProps {
-    cellValue: number
+    cellValue: number,
+    onClick: () => void
 }
 
+const useStyles = makeStyles({
+    root: (props: ICellProps) => ({
+        width: "2em",
+        height: "2em",
+        borderStyle: "solid",
+        borderWidth: "1px",
+        backgroundColor: props.cellValue === 1 ? "black" : "white"
+    }),
+})
+
 export const Cell = (props: ICellProps): React.ReactElement => {
-    const {cellValue} = props
+    const {onClick} = props
+    const classes = useStyles(props)
 
-    const cellColor = (): string => {
-        if (cellValue > 0) {
-            return "black"
-        }
-
-        return "white"
-    }
 
     return (
-        <TableCell align={"center"} size={"small"} padding={"none"} style={{backgroundColor: cellColor()}}>
-            {cellValue}
-        </TableCell>
-)
+        <div className={classes.root} onClick={onClick}/>
+    )
 }

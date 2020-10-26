@@ -3,14 +3,6 @@ const HEIGHT = 20;
 
 export type boardState = number[][];
 
-export const initialBoardState = (): boardState => {
-    let arr = emptyBoardState();
-
-    arr = addGlider(arr, 4, 4);
-
-    return arr;
-};
-
 export const emptyBoardState = (): boardState => {
     let arr: number[][] = [];
 
@@ -31,7 +23,7 @@ const MAX_NEEDED_LIVING_CELLS = 3;
 const REPRODUCE_NEEDED = 3;
 
 export const simulateStep = (state: boardState): boardState => {
-    let newState = initialBoardState();
+    let newState = emptyBoardState();
 
     for (let rowNum = 0; rowNum < state.length; rowNum++) {
         for (let columnNum = 0; columnNum < state[rowNum].length; columnNum++) {
