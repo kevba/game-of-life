@@ -1,21 +1,27 @@
 import React from 'react';
-import { boardState } from './boardstate';
+import { Board, ICell } from './boardstate';
 import { Row } from './row';
 
 interface IGameFieldProps {
-    boardState: boardState,
+    board: Board,
     onCellClick: (row: number, col: number) => void
 }
 
 export const GameField = (props: IGameFieldProps): React.ReactElement => {
-    const {boardState, onCellClick} = props
+    const {board, onCellClick} = props
 
     const renderRows = ():React.ReactElement[] => {
-        return boardState.map((row: number[], rowNumber: number) => {
-            return (
-                <Row key={rowNumber} row={row} onCellClick={(col: number) => onCellClick(rowNumber, col)}/>
+        let rows: React.ReactElement[] = []
+
+        for (let rowNum = 0; rowNum<board.width; rowNum++) {
+            let rowCells: ICell[] = board.state.slice(rowNum*board.width, (rowNum+1)*board.width)
+
+            rows.push(
+                <Row key={rowNum} row={rowCells} onCellClick={(col: number) => onCellClick(rowNum, col)}/>
             )
-        })
+        }
+    
+        return rows
     }
 
     return (

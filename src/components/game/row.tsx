@@ -1,9 +1,10 @@
 import { makeStyles } from '@material-ui/core';
 import React from 'react';
 import { Cell } from './cell';
+import { ICell } from './boardstate';
 
 interface IRowProps {
-    row: number[]
+    row: ICell[]
     onCellClick: (col: number) => void
 }
 
@@ -19,17 +20,17 @@ export const Row = (props: IRowProps): React.ReactElement => {
     const {row, onCellClick} = props
     const classes = useStyles()
 
-    const renderCells = (row: number[]): React.ReactElement[] => {
-        return row.map((cellValue: number, column: number) => {
+    const renderCells = (): React.ReactElement[] => {
+        return row.map((cellValue: ICell, column: number) => {
             return (
-                <Cell key={column} boardSize={row.length} cellValue={cellValue} onClick={() => onCellClick(column)}/>
+                <Cell key={column} boardSize={row.length} cell={cellValue} onClick={() => onCellClick(column)}/>
             )
         })
     }
 
     return (
         <div className={classes.root}>
-            {renderCells(row)}
+            {renderCells()}
         </div>
     )
 }

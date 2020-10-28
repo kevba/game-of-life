@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { simulateStep, emptyBoardState } from './boardstate';
+import { simulateStep, emptyBoardState, Board } from './boardstate';
 import { GameField } from './gameField';
 import { Typography, Divider, Button, Grid } from '@material-ui/core';
 
@@ -10,28 +10,23 @@ export const GameContainer = (): React.ReactElement => {
     const [isRunning, setIsRunning] = useState(false)
 
     const [boardSize, setBoardSize] = useState(20)
-    const [boardState, setBoardState] = useState(emptyBoardState(boardSize))
+    const [board, setBoard] = useState<Board>(new Board(boardSize))
 
     const nextStep = () => {
         setStep(step+1)
         
-        const newState = simulateStep(boardState)
-        setBoardState(newState)
+        simulateStep(board)
     }
 
-    useEffect(() => {
-        let timer = null
+    // useEffect(() => {
+    //     let timer = null
         
-        if (isRunning) {
-            timer = setTimeout(() => nextStep(), STEP_INTERVAL);
-        }
+    //     if (isRunning) {
+    //         timer = setTimeout(() => nextStep(), STEP_INTERVAL);
+    //     }
     
-        return () => clearTimeout(timer);
-    }, [isRunning, boardState]);
-
-    useEffect(() => {
-        setBoardState(emptyBoardState(boardSize))
-    }, [boardSize, setBoardState])
+    //     return () => clearTimeout(timer);
+    // }, [isRunning, boardState]);
 
     const handleStartStop = () => {
         setIsRunning(!isRunning)
@@ -39,7 +34,7 @@ export const GameContainer = (): React.ReactElement => {
 
     const handleReset = () => {
         setIsRunning(false)
-        setBoardState(emptyBoardState(boardSize))
+        setBoard(new Board(boardSize))
         setStep(0)
     }
 
@@ -47,16 +42,10 @@ export const GameContainer = (): React.ReactElement => {
         if (isRunning) {
             return
         }
-
-        let currentBoardState = [...boardState]
-
-        if (boardState[row][col] === 1) {
-            currentBoardState[row][col] = 0
-        } else {
-            currentBoardState[row][col] = 1
-        }
-
-        setBoardState(currentBoardState)
+    
+        let cell = board.get(row, col)
+        cell.alive = !cell.alive 
+        board.set(row, col, cell)
     }
 
     const renderBoardSizeControls = ():React.ReactElement => {
@@ -124,7 +113,7 @@ export const GameContainer = (): React.ReactElement => {
             </Grid>
             
             <Grid item xs={9} >
-                <GameField boardState={boardState} onCellClick={handleCellClick}/>
+                <GameField board={board} onCellClick={handleCellClick}/>
             </Grid>
 
         </Grid>

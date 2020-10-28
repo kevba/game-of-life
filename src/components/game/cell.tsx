@@ -1,8 +1,9 @@
 import { makeStyles } from '@material-ui/core';
 import React from 'react';
+import { ICell } from './boardstate';
 
 interface ICellProps {
-    cellValue: number,
+    cell: ICell,
     boardSize: number,
     onClick: () => void
 }
@@ -13,7 +14,7 @@ const useStyles = makeStyles({
         flexBasis: `calc(100%/${props.boardSize})`,
         border: "1px solid",
         boxSizing: "border-box",
-        backgroundColor: props.cellValue === 1 ? "black" : "white",
+        backgroundColor: props.cell.alive ? props.cell.color : "white",
 
         "&::before": {
             content: '""',
@@ -32,13 +33,15 @@ const useStyles = makeStyles({
 })
 
 export const Cell = (props: ICellProps): React.ReactElement => {
-    const {onClick} = props
+    const {onClick, cell} = props
     const classes = useStyles(props)
 
 
     return (
         <div className={classes.root} onClick={onClick}>
-            <div className={classes.cell} />
+            <div className={classes.cell}>
+                {`${cell.icon}`}
+            </div>  
         </div>
     )
 }
