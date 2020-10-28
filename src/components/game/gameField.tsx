@@ -7,7 +7,6 @@ interface IGameFieldProps {
     onCellClick: (row: number, col: number) => void
 }
 
-
 export const GameField = (props: IGameFieldProps): React.ReactElement => {
     const {boardState, onCellClick} = props
 

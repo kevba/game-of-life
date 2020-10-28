@@ -10,11 +10,10 @@ interface IRowProps {
 const useStyles = makeStyles({
     root: {
         display: "flex",
-        alignItems: "center",
         flexWrap: "nowrap",
+        maxWidth: "70vh",
     },
 })
-
 
 export const Row = (props: IRowProps): React.ReactElement => {
     const {row, onCellClick} = props
@@ -23,7 +22,7 @@ export const Row = (props: IRowProps): React.ReactElement => {
     const renderCells = (row: number[]): React.ReactElement[] => {
         return row.map((cellValue: number, column: number) => {
             return (
-                <Cell key={column} cellValue={cellValue} onClick={() => onCellClick(column)}/>
+                <Cell key={column} boardSize={row.length} cellValue={cellValue} onClick={() => onCellClick(column)}/>
             )
         })
     }

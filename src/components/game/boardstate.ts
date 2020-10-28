@@ -1,15 +1,12 @@
-const WIDTH = 20;
-const HEIGHT = 20;
-
 export type boardState = number[][];
 
-export const emptyBoardState = (): boardState => {
+export const emptyBoardState = (size: number): boardState => {
     let arr: number[][] = [];
 
-    for (let i = 0; i < WIDTH; i++) {
+    for (let i = 0; i < size; i++) {
         arr[i] = [];
 
-        for (let j = 0; j < HEIGHT; j++) {
+        for (let j = 0; j < size; j++) {
             arr[i].push(0);
         }
     }
@@ -23,7 +20,7 @@ const MAX_NEEDED_LIVING_CELLS = 3;
 const REPRODUCE_NEEDED = 3;
 
 export const simulateStep = (state: boardState): boardState => {
-    let newState = emptyBoardState();
+    let newState = emptyBoardState(state.length);
 
     for (let rowNum = 0; rowNum < state.length; rowNum++) {
         for (let columnNum = 0; columnNum < state[rowNum].length; columnNum++) {

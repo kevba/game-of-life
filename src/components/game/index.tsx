@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { simulateStep, emptyBoardState } from './boardstate';
 import { GameField } from './gameField';
-import { Typography, Divider, Button } from '@material-ui/core';
+import { Typography, Divider, Button, Grid } from '@material-ui/core';
 
 const STEP_INTERVAL = 750
 
 export const GameContainer = (): React.ReactElement => {
     const [step, setStep] = useState(0)
     const [isRunning, setIsRunning] = useState(false)
-    const [boardState, setBoardState] = useState(emptyBoardState())
+
+    const [boardSize, setBoardSize] = useState(20)
+    const [boardState, setBoardState] = useState(emptyBoardState(boardSize))
 
     const nextStep = () => {
         setStep(step+1)
@@ -27,13 +29,17 @@ export const GameContainer = (): React.ReactElement => {
         return () => clearTimeout(timer);
     }, [isRunning, boardState]);
 
+    useEffect(() => {
+        setBoardState(emptyBoardState(boardSize))
+    }, [boardSize, setBoardState])
+
     const handleStartStop = () => {
         setIsRunning(!isRunning)
     }
 
     const handleReset = () => {
         setIsRunning(false)
-        setBoardState(emptyBoardState())
+        setBoardState(emptyBoardState(boardSize))
         setStep(0)
     }
 
@@ -53,18 +59,74 @@ export const GameContainer = (): React.ReactElement => {
         setBoardState(currentBoardState)
     }
 
+    const renderBoardSizeControls = ():React.ReactElement => {
+        return (
+            <Grid container>
+                <Grid item xs={12}>
+                    <Typography variant={"subtitle1"}> Boardsize {boardSize} </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                    <Button variant="contained" onClick={() => setBoardSize(boardSize+1)}>
+                        +
+                    </Button>
+                </Grid>
+                <Grid item xs={6}>
+                    <Button variant="contained" onClick={() => setBoardSize(boardSize-1)}>
+                            -
+                    </Button>
+                </Grid>
+            </Grid>
+        )
+    }
+
+    const renderStepControls = ():React.ReactElement => {
+        return (
+            <Grid container>
+                <Grid item xs={12}>
+                    <Typography variant={"subtitle1"}> Step {step} </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                    <Button variant="contained" onClick={handleStartStop}>
+                        {!isRunning ? "Start" : "Pause"}
+                    </Button>
+                    </Grid>
+                <Grid item xs={12}>
+                    <Button variant="contained" onClick={handleReset}>
+                        Reset
+                    </Button>
+                </Grid>
+            </Grid>
+        )
+    }
+
+    const renderControls = (): React.ReactElement => {
+        return (
+            <Grid container direction={"column"} justify={"flex-start"} alignItems={"center"}>
+                <Grid item xs={12}>
+                    {renderStepControls()}
+                </Grid>
+                <Divider />
+                <Grid item xs={12}>
+                    {renderBoardSizeControls()}
+                </Grid>
+            </Grid>
+        )
+    }
+
     return (
-        <React.Fragment>
-            <Typography variant={"h3"}> Game of life </Typography>
-            <Typography variant={"subtitle1"}> Step {step} </Typography>
-            <Divider />
-            <GameField boardState={boardState} onCellClick={handleCellClick}/>
-            <Button onClick={handleStartStop}>
-                {!isRunning ? "Start" : "Pause"}
-            </Button>
-            <Button onClick={handleReset}>
-                Reset
-            </Button>
-        </React.Fragment>
+        <Grid container justify={"center"}>
+            <Grid item xs={12}>
+                <Typography variant={"h3"}> Game of life </Typography>
+            </Grid>
+
+            <Grid item xs={3}>
+                {renderControls()}
+            </Grid>
+            
+            <Grid item xs={9} >
+                <GameField boardState={boardState} onCellClick={handleCellClick}/>
+            </Grid>
+
+        </Grid>
     )
 }

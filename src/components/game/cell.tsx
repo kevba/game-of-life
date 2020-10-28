@@ -3,17 +3,32 @@ import React from 'react';
 
 interface ICellProps {
     cellValue: number,
+    boardSize: number,
     onClick: () => void
 }
 
 const useStyles = makeStyles({
     root: (props: ICellProps) => ({
-        width: "2em",
-        height: "2em",
-        borderStyle: "solid",
-        borderWidth: "1px",
-        backgroundColor: props.cellValue === 1 ? "black" : "white"
+        position: "relative",
+        flexBasis: `calc(100%/${props.boardSize})`,
+        border: "1px solid",
+        boxSizing: "border-box",
+        backgroundColor: props.cellValue === 1 ? "black" : "white",
+
+        "&::before": {
+            content: '""',
+            display: "block",
+            paddingTop: "100%",
+        }
     }),
+
+    cell: {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        height: "100%",
+        width: "100%",
+    }
 })
 
 export const Cell = (props: ICellProps): React.ReactElement => {
@@ -22,6 +37,8 @@ export const Cell = (props: ICellProps): React.ReactElement => {
 
 
     return (
-        <div className={classes.root} onClick={onClick}/>
+        <div className={classes.root} onClick={onClick}>
+            <div className={classes.cell} />
+        </div>
     )
 }
