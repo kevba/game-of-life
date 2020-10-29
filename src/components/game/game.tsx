@@ -4,7 +4,9 @@ import { GameField } from './gameField';
 import { Typography, Divider, Button, Grid } from '@material-ui/core';
 import { cellAction } from './clikcActions';
 
-const STEP_INTERVAL = 750
+
+const DEFAULT_SPEED = 750
+const MAX_SPEED = 20
 
 interface IGameProps {
     board: Board;
@@ -21,16 +23,25 @@ export const Game = (props: IGameProps): React.ReactElement => {
     const {board, setBoardSize, resetBoard, setCell, nextStep, currentStep} = props
 
     const [isRunning, setIsRunning] = useState(false)
+    const [speed, setSpeed] = useState(DEFAULT_SPEED)
 
     useEffect(() => {
         let timer = null
         
         if (isRunning) {
-            timer = setTimeout(() => nextStep(), STEP_INTERVAL);
+            timer = setTimeout(() => nextStep(), speed);
         }
     
         return () => clearTimeout(timer);
-    }, [isRunning, board]);
+    }, [isRunning, board, speed]);
+
+    const handleSetSpeed = (speed: number) => {
+        if (speed < MAX_SPEED) {
+            speed = MAX_SPEED
+        }
+
+        setSpeed(speed)
+    }
 
     const handleStartStop = () => {
         setIsRunning(!isRunning)
@@ -81,18 +92,38 @@ export const Game = (props: IGameProps): React.ReactElement => {
         )
     }
 
+    const renderStepSpeedControls = ():React.ReactElement => {
+        return (
+            <Grid container>
+                <Grid item xs={12}>
+                    <Typography variant={"subtitle1"}> Step Speed {speed}ms </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                    <Button variant="contained" onClick={() => handleSetSpeed(speed+100)}>
+                        +
+                    </Button>
+                </Grid>
+                <Grid item xs={6}>
+                    <Button variant="contained" onClick={() => handleSetSpeed(speed-100)}>
+                            -
+                    </Button>
+                </Grid>
+            </Grid>
+        )
+    }
+
     const renderStepControls = ():React.ReactElement => {
         return (
             <Grid container>
                 <Grid item xs={12}>
                     <Typography variant={"subtitle1"}> Step {currentStep} </Typography>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={6}>
                     <Button variant="contained" onClick={handleStartStop}>
                         {!isRunning ? "Start" : "Pause"}
                     </Button>
                     </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={6}>
                     <Button variant="contained" onClick={handleReset}>
                         Reset
                     </Button>
@@ -103,13 +134,15 @@ export const Game = (props: IGameProps): React.ReactElement => {
 
     const renderControls = (): React.ReactElement => {
         return (
-            <Grid container direction={"column"} justify={"flex-start"} alignItems={"center"}>
+            <Grid container direction={"column"} justify={"flex-start"} alignContent={"space-around"}>
                 <Grid item xs={12}>
                     {renderStepControls()}
                 </Grid>
-                <Divider />
                 <Grid item xs={12}>
                     {renderBoardSizeControls()}
+                </Grid>
+                <Grid item xs={12}>
+                    {renderStepSpeedControls()}
                 </Grid>
             </Grid>
         )
