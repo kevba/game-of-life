@@ -15,22 +15,11 @@ export const createDefaultCell = (): ICell => {
 export type Board = {
     state: ICell[];
     width: number;
-    get: (x: number, y: number) => ICell;
-    set: (x: number, y: number, cell: ICell) => void;
 };
 
 export function Board(width: number): void {
     this.width = width;
     this.state = emptyBoardState(width);
-
-    this.get = (x: number, y: number): ICell => {
-        return this.state[y * this.width + x];
-    };
-
-    this.set = (x: number, y: number, cell: ICell) => {
-        const index = y * this.width + x;
-        this.state[index] = cell;
-    };
 }
 
 export const emptyBoardState = (size: number): ICell[] => {
@@ -48,8 +37,8 @@ const MAX_NEEDED_LIVING_CELLS = 3;
 
 const REPRODUCE_NEEDED = 3;
 
-export const simulateStep = (board: Board) => {
-    let newState = emptyBoardState(board.width);
+export const simulateStep = (board: Board): Board => {
+    let newState: ICell[] = [];
 
     for (let cellNum = 0; cellNum < board.state.length; cellNum++) {
         let cell = board.state[cellNum];
@@ -77,10 +66,15 @@ export const simulateStep = (board: Board) => {
             }
         }
 
-        newState[cellNum] = cell;
+        newState.push(cell);
     }
 
-    board.state = newState;
+    let newBoard: Board = {
+        width: board.width,
+        state: newState,
+    };
+
+    return newBoard;
 };
 
 const countLiving = (neighbours: ICell[]): number => {
