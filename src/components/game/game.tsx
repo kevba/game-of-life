@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { Board, ICell } from './boardstate';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Board, createDefaultCell, ICell } from './boardstate';
 import { GameField } from './gameField';
-import { Typography, Divider, Button, Grid } from '@material-ui/core';
-import { cellAction } from './clikcActions';
+import { Typography, Divider, Button, Grid, debounce } from '@material-ui/core';
+import { cellAction } from './clickActions';
 
 
-const DEFAULT_SPEED = 750
-const MAX_SPEED = 20
+const DEFAULT_SPEED = 500
+const MAX_SPEED = 100
+const SPEED_STEP_SIZE = 100
 
 interface IGameProps {
     board: Board;
@@ -52,7 +53,7 @@ export const Game = (props: IGameProps): React.ReactElement => {
         setIsRunning(false)
     }
 
-    const handleCellClick = (cellNum: number, action: cellAction) => {
+    const handleCellClick = useCallback((cellNum: number, action: cellAction) => {
         if (isRunning) {
             return
         }
@@ -68,6 +69,24 @@ export const Game = (props: IGameProps): React.ReactElement => {
         }
 
         setCell(cellNum, cell)
+    }, [])
+
+    const handleIncreaseBoardSize = () => {
+        if (isRunning) {
+            return
+        }
+
+        const {width} = board
+        setBoardSize(width+1)
+    }
+
+    const handleDecreaseBoardSize = () => {
+        if (isRunning) {
+            return
+        }
+
+        const {width} = board
+        setBoardSize(width-1)
     }
 
     const renderBoardSizeControls = ():React.ReactElement => {
@@ -79,12 +98,12 @@ export const Game = (props: IGameProps): React.ReactElement => {
                     <Typography variant={"subtitle1"}> Boardsize {size} </Typography>
                 </Grid>
                 <Grid item xs={6}>
-                    <Button variant="contained" onClick={() => setBoardSize(size+1)}>
+                    <Button variant="contained" onClick={() => handleIncreaseBoardSize()}>
                         +
                     </Button>
                 </Grid>
                 <Grid item xs={6}>
-                    <Button variant="contained" onClick={() => setBoardSize(size-1)}>
+                    <Button variant="contained" onClick={() => handleDecreaseBoardSize()}>
                             -
                     </Button>
                 </Grid>
@@ -99,12 +118,12 @@ export const Game = (props: IGameProps): React.ReactElement => {
                     <Typography variant={"subtitle1"}> Step Speed {speed}ms </Typography>
                 </Grid>
                 <Grid item xs={6}>
-                    <Button variant="contained" onClick={() => handleSetSpeed(speed+100)}>
+                    <Button variant="contained" onClick={() => handleSetSpeed(speed+SPEED_STEP_SIZE)}>
                         +
                     </Button>
                 </Grid>
                 <Grid item xs={6}>
-                    <Button variant="contained" onClick={() => handleSetSpeed(speed-100)}>
+                    <Button variant="contained" onClick={() => handleSetSpeed(speed-SPEED_STEP_SIZE)}>
                             -
                     </Button>
                 </Grid>

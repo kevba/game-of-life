@@ -1,11 +1,12 @@
 import { makeStyles } from '@material-ui/core';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ICell } from './boardstate';
-import { cellAction } from './clikcActions';
+import { cellAction } from './clickActions';
 
 interface ICellProps {
     cell: ICell;
-    onClick: (action: cellAction) => void;
+    cellNum: number;
+    onClick: (cellNum: number, action: cellAction) => void;
 }
 
 const useStyles = makeStyles({
@@ -34,24 +35,44 @@ const useStyles = makeStyles({
 })
 
 export const Cell = (props: ICellProps): React.ReactElement => {
-    const {onClick, cell} = props
+    const {onClick, cell, cellNum} = props
     const classes = useStyles(props)
 
-    const handleMouseEvent = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {        
-        if (e.buttons === 1) {
-            onClick(cellAction.Create)
+    const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {        
+        if (e.buttons === 1)  {
+            onClick(cellNum, cellAction.Create)
         }
 
         if (e.buttons === 2) {
-            onClick(cellAction.Erase)
+            onClick(cellNum, cellAction.Erase)
         }
     }
+
+    const handleClick = () => {
+        if (!cell.alive)  {
+            onClick(cellNum, cellAction.Create)
+        } else{
+            onClick(cellNum, cellAction.Erase)
+        }
+    }
+
+    useEffect(() => {
+        console.log("onCLikc has chagned somehow");
+    }, [onClick])
+
+    // useEffect(() => {
+    //     console.log("cell has changed somehow");
+    // }, [cell])
+
+    // useEffect(() => {
+    //     console.log("cellNum has changed somehow");
+    // }, [cellNum])
 
     return (
         <div
             className={classes.root}
-            onMouseEnter={handleMouseEvent}
-            onClick={handleMouseEvent}
+            onMouseEnter={handleMouseEnter}
+            onClick={handleClick}
             onContextMenu={(e) => e.preventDefault()}>
             <svg viewBox={"0 0 15 10"} className={classes.cell}>
                 <text x={"0"} y={"10"} >
