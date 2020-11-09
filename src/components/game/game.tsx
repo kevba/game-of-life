@@ -1,30 +1,27 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { Board, createDefaultCell, ICell } from './boardstate';
+import React, {useContext, useEffect, useState } from 'react';
+import { ICell } from './boardstate';
 import { GameField } from './gameField';
-import { Typography, Divider, Button, Grid, debounce } from '@material-ui/core';
-import { cellAction } from './clickActions';
-
+import { Typography, Button, Grid } from '@material-ui/core';
+import { BoardContext } from './index';
 
 const DEFAULT_SPEED = 500
 const MAX_SPEED = 100
 const SPEED_STEP_SIZE = 100
 
 interface IGameProps {
-    board: Board;
-    setBoardSize: (size: number) => void;
+    setBoardSize: (size: number) => void;    
     resetBoard: () => void;
-    
-    setCell: (cellNum: number, cell: ICell) => void;
-
     nextStep: () => void;
     currentStep: number;
 }
 
 export const Game = (props: IGameProps): React.ReactElement => {
-    const {board, setBoardSize, resetBoard, setCell, nextStep, currentStep} = props
-
+    const {setBoardSize, resetBoard, nextStep, currentStep} = props
+    
     const [isRunning, setIsRunning] = useState(false)
     const [speed, setSpeed] = useState(DEFAULT_SPEED)
+
+    const board = useContext(BoardContext)
 
     useEffect(() => {
         let timer = null
@@ -34,7 +31,7 @@ export const Game = (props: IGameProps): React.ReactElement => {
         }
     
         return () => clearTimeout(timer);
-    }, [isRunning, board, speed]);
+    }, [isRunning, speed, board]);
 
     const handleSetSpeed = (speed: number) => {
         if (speed < MAX_SPEED) {
@@ -53,31 +50,12 @@ export const Game = (props: IGameProps): React.ReactElement => {
         setIsRunning(false)
     }
 
-    const handleCellClick = useCallback((cellNum: number, action: cellAction) => {
-        if (isRunning) {
-            return
-        }
-        
-        let cell = board.state[cellNum]
-
-        if (action === cellAction.Create) {
-            cell.alive = true 
-        }
-
-        if (action === cellAction.Erase) {
-            cell.alive = false 
-        }
-
-        setCell(cellNum, cell)
-    }, [])
-
     const handleIncreaseBoardSize = () => {
         if (isRunning) {
             return
         }
 
-        const {width} = board
-        setBoardSize(width+1)
+        setBoardSize(board.width+1)
     }
 
     const handleDecreaseBoardSize = () => {
@@ -85,17 +63,14 @@ export const Game = (props: IGameProps): React.ReactElement => {
             return
         }
 
-        const {width} = board
-        setBoardSize(width-1)
+        setBoardSize(board.width-1)
     }
 
-    const renderBoardSizeControls = ():React.ReactElement => {
-        const size = board.width
-    
+    const renderBoardSizeControls = ():React.ReactElement => {    
         return (
             <Grid container>
                 <Grid item xs={12}>
-                    <Typography variant={"subtitle1"}> Boardsize {size} </Typography>
+                    <Typography variant={"subtitle1"}> Boardsize {board.width} </Typography>
                 </Grid>
                 <Grid item xs={6}>
                     <Button variant="contained" onClick={() => handleIncreaseBoardSize()}>
@@ -178,7 +153,7 @@ export const Game = (props: IGameProps): React.ReactElement => {
             </Grid>
             
             <Grid item xs={9} >
-                <GameField board={board} onCellClick={handleCellClick}/>
+                <GameField />
             </Grid>
 
         </Grid>

@@ -12,17 +12,7 @@ export const createDefaultCell = (): ICell => {
     };
 };
 
-export type Board = {
-    state: ICell[];
-    width: number;
-};
-
-export function Board(width: number): void {
-    this.width = width;
-    this.state = emptyBoardState(width);
-}
-
-export const emptyBoardState = (size: number): ICell[] => {
+export const emptyCells = (size: number): ICell[] => {
     let state: ICell[] = [];
 
     for (let i = 0; i < size * size; i++) {
@@ -37,14 +27,14 @@ const MAX_NEEDED_LIVING_CELLS = 3;
 
 const REPRODUCE_NEEDED = 3;
 
-export const simulateStep = (board: Board): Board => {
-    let newState: ICell[] = [];
+export const simulateStep = (cells: ICell[], boardWidth: number): ICell[] => {
+    let newCells: ICell[] = [];
 
-    for (let cellNum = 0; cellNum < board.state.length; cellNum++) {
-        let cell = board.state[cellNum];
+    for (let cellNum = 0; cellNum < cells.length; cellNum++) {
+        let cell = cells[cellNum];
 
-        let neighbours = getCellNeighbours(board, cellNum);
-        let isAlive = board.state[cellNum].alive;
+        let neighbours = getCellNeighbours(cells, boardWidth, cellNum);
+        let isAlive = cells[cellNum].alive;
 
         let livingNeighbours = countLiving(neighbours);
 
@@ -66,15 +56,10 @@ export const simulateStep = (board: Board): Board => {
             }
         }
 
-        newState.push(cell);
+        newCells.push(cell);
     }
 
-    let newBoard: Board = {
-        width: board.width,
-        state: newState,
-    };
-
-    return newBoard;
+    return newCells;
 };
 
 const countLiving = (neighbours: ICell[]): number => {
@@ -88,30 +73,32 @@ const countLiving = (neighbours: ICell[]): number => {
     return liveCellCount;
 };
 
-const getCellNeighbours = (board: Board, cellNum: number): ICell[] => {
+const getCellNeighbours = (
+    cells: ICell[],
+    boardWidth: number,
+    cellNum: number
+): ICell[] => {
     let neigbourValues = [];
 
     for (let topIndex of [-1, 0, 1]) {
-        neigbourValues.push(getCell(board, cellNum - topIndex - board.width));
+        neigbourValues.push(getCell(cells, cellNum - topIndex - boardWidth));
     }
 
     for (let middleIndex of [-1, 1]) {
-        neigbourValues.push(getCell(board, cellNum - middleIndex));
+        neigbourValues.push(getCell(cells, cellNum - middleIndex));
     }
 
     for (let bottomIndex of [-1, 0, 1]) {
-        neigbourValues.push(
-            getCell(board, cellNum - bottomIndex + board.width)
-        );
+        neigbourValues.push(getCell(cells, cellNum - bottomIndex + boardWidth));
     }
 
     return neigbourValues;
 };
 
-const getCell = (board: Board, cellNum: number): ICell => {
-    if (cellNum < 0 || cellNum > board.state.length - 1) {
+const getCell = (cells: ICell[], cellNum: number): ICell => {
+    if (cellNum < 0 || cellNum > cells.length - 1) {
         return createDefaultCell();
     }
 
-    return board.state[cellNum];
+    return cells[cellNum];
 };

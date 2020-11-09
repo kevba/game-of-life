@@ -1,43 +1,30 @@
-import React, { useCallback } from 'react';
-import { Board } from './boardstate';
+import React, { useContext, useMemo } from 'react';
 
-import { makeStyles } from '@material-ui/core';
-import { cellAction } from './clickActions';
 import { Row } from './row';
+import { BoardContext } from './index';
 
-interface IGameFieldProps {
-    board: Board,
-    onCellClick: (cellNum: number, action: cellAction) => void
-}
+export const GameField = (): React.ReactElement => {
+    const {cells, width} = useContext(BoardContext)
 
-
-export const GameField = (props: IGameFieldProps): React.ReactElement => {
-    const {board, onCellClick} = props
-
-    const handleCellClick = useCallback((cellNum: number, action: cellAction) => {
-        onCellClick(cellNum, action)
-    }, [onCellClick])
-
-    const renderRows = ():React.ReactElement[] => {
+    const rows = useMemo((): React.ReactElement[] => {
         let rows: React.ReactElement[] = []
 
-        for (let rowNum = 0; rowNum<board.width; rowNum++) {
-            let rowStart = rowNum*(board.width)
-            let rowEnd = rowStart+board.width
-        
-            let row = board.state.slice(rowStart, rowEnd)
+        for (let rowNum = 0; rowNum<width; rowNum++) {
+            let rowStart = rowNum*width
+            let rowEnd = rowStart+width
+            let rowCells = cells.slice(rowStart, rowEnd)
             
             rows.push(
-                <Row key={rowNum} rowNum={rowNum} row={row} onCellClick={handleCellClick} />
+                <Row key={`row_${rowNum}`} rowNumber={rowNum} rowCells={rowCells} />
             )
         }
-    
+
         return rows
-    }
+    }, [cells])
 
     return (
         <div>
-            {renderRows()}
+            {rows}
         </div>
     )
 }

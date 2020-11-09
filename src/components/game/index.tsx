@@ -1,54 +1,91 @@
-import React, { useState } from 'react';
-import { Board, ICell, simulateStep } from './boardstate';
+import React, { useReducer, useState, useEffect } from 'react';
+import { ICell, simulateStep, emptyCells, createDefaultCell } from './boardstate';
 import { Game } from './game';
 
 const DEFAULT_WIDTH = 20
 
+type BoardState = {
+    cells: ICell[];
+    width: number
+}
+
+type BoardAction =
+    | {type: 'setCell', cellNumber: number, cell: ICell}
+    | {type: 'setWidth', width: number}
+    | {type: 'simulateStep'}
+    | {type: 'reset'};
+
+const defaultBoard = {
+    cells: emptyCells(DEFAULT_WIDTH),
+    width: DEFAULT_WIDTH
+}
+
+const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
+    switch(action.type) {
+        case "setCell":                    
+            let newCells = [...state.cells]
+            newCells[action.cellNumber] = action.cell
+
+            return {
+                ...state,
+                cells: newCells,
+            }
+        case "simulateStep":
+            newCells = simulateStep(state.cells, state.width)
+            return {
+                ...state,
+                cells: newCells,
+            }
+        case "reset":
+            return {
+                ...defaultBoard,
+            }
+
+        case "setWidth":
+            return {
+                ...state,
+                cells: emptyCells(action.width),
+                width: action.width
+            }
+    
+        }
+}
+
+export const BoardContext = React.createContext<BoardState>(null);
+export const BoardDispatch = React.createContext<React.Dispatch<BoardAction>>(null);
+
 export const GameContainer = (): React.ReactElement => {
-    const [board, setBoard] = useState(new Board(DEFAULT_WIDTH))
     const [currentStep, setCurrentStep] = useState(0)
 
+    const [board, dispatch] = useReducer(boardReducer, defaultBoard)
+    
     const handleSetBoardWidth = (width: number) => {
         if (width > 1) {
-            let newBoard = new Board(width)
-            setBoard(newBoard)
+            dispatch({type: 'setWidth', width: width})
         }
     }
 
     const handleResetBoard = () => {
         setCurrentStep(0)
-
-        let newBoard = new Board(board.width)
-        setBoard(newBoard)
+        dispatch({type: 'reset'})
     }  
-
-    const handleSetCell = (cellNum: number, cell: ICell) => {
-        let newState = [...board.state]
-        newState[cellNum] = cell
-
-        let newBoard = {
-            width: board.width,
-            state: newState
-        }
-    
-        setBoard(newBoard)
-    }
 
     const handleNextStep = () => {
         setCurrentStep(currentStep+1)
 
-        let newBoard = simulateStep(board)
-        setBoard(newBoard)
+        dispatch({type: 'simulateStep'})
     }
 
     return (
-        <Game
-            board={board}
-            setBoardSize={handleSetBoardWidth}
-            resetBoard={handleResetBoard}
-            setCell={handleSetCell}
-            nextStep={handleNextStep}
-            currentStep={currentStep} 
-        />
+        <BoardContext.Provider value={board}>
+            <BoardDispatch.Provider value={dispatch}>
+                <Game
+                    setBoardSize={handleSetBoardWidth}
+                    resetBoard={handleResetBoard}
+                    nextStep={handleNextStep}
+                    currentStep={currentStep} 
+                />
+            </BoardDispatch.Provider>
+        </BoardContext.Provider>
     )
 }

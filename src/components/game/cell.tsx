@@ -1,12 +1,12 @@
 import { makeStyles } from '@material-ui/core';
-import React, { useEffect } from 'react';
-import { ICell } from './boardstate';
+import React, { useCallback, useContext, useEffect } from 'react';
 import { cellAction } from './clickActions';
+import { BoardDispatch } from './index';
+import { ICell } from './boardstate';
 
 interface ICellProps {
+    updateCell: (action: cellAction) => void;
     cell: ICell;
-    cellNum: number;
-    onClick: (cellNum: number, action: cellAction) => void;
 }
 
 const useStyles = makeStyles({
@@ -35,38 +35,24 @@ const useStyles = makeStyles({
 })
 
 export const Cell = (props: ICellProps): React.ReactElement => {
-    const {onClick, cell, cellNum} = props
+    const {cell, updateCell} = props
     const classes = useStyles(props)
 
-    const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {        
+    const handleMouseEnter = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         if (e.buttons === 1)  {
-            onClick(cellNum, cellAction.Create)
+            updateCell(cellAction.Create)
+        } else if (e.buttons === 2) {
+            updateCell(cellAction.Erase)
         }
+    }, [])
 
-        if (e.buttons === 2) {
-            onClick(cellNum, cellAction.Erase)
-        }
-    }
-
-    const handleClick = () => {
+    const handleClick = useCallback(() => {
         if (!cell.alive)  {
-            onClick(cellNum, cellAction.Create)
+            updateCell(cellAction.Create)
         } else{
-            onClick(cellNum, cellAction.Erase)
+            updateCell(cellAction.Erase)
         }
-    }
-
-    useEffect(() => {
-        console.log("onCLikc has chagned somehow");
-    }, [onClick])
-
-    // useEffect(() => {
-    //     console.log("cell has changed somehow");
-    // }, [cell])
-
-    // useEffect(() => {
-    //     console.log("cellNum has changed somehow");
-    // }, [cellNum])
+    }, [cell])
 
     return (
         <div
