@@ -1,4 +1,4 @@
-import React, { useReducer, useState, useEffect } from 'react';
+import React, { useReducer, useState, useEffect, useCallback } from 'react';
 import { ICell, simulateStep, emptyCells, createDefaultCell } from './boardstate';
 import { Game } from './game';
 
@@ -38,9 +38,10 @@ const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
             }
         case "reset":
             return {
-                ...defaultBoard,
+                ...state,
+                cells: emptyCells(DEFAULT_WIDTH),
+                width: DEFAULT_WIDTH
             }
-
         case "setWidth":
             return {
                 ...state,
@@ -59,20 +60,19 @@ export const GameContainer = (): React.ReactElement => {
 
     const [board, dispatch] = useReducer(boardReducer, defaultBoard)
     
-    const handleSetBoardWidth = (width: number) => {
+    const handleSetBoardWidth = useCallback((width: number) => {
         if (width > 1) {
             dispatch({type: 'setWidth', width: width})
         }
-    }
+    }, [])
 
     const handleResetBoard = () => {
         setCurrentStep(0)
         dispatch({type: 'reset'})
-    }  
+    }
 
     const handleNextStep = () => {
         setCurrentStep(currentStep+1)
-
         dispatch({type: 'simulateStep'})
     }
 

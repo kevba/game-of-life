@@ -1,8 +1,8 @@
 import { makeStyles } from '@material-ui/core';
 import React, { useCallback, useContext, useEffect } from 'react';
-import { cellAction } from './clickActions';
-import { BoardDispatch } from './index';
-import { ICell } from './boardstate';
+import { cellAction } from '../clickActions';
+import { BoardDispatch } from '../index';
+import { ICell } from '../boardstate';
 
 interface ICellProps {
     updateCell: (action: cellAction) => void;
@@ -52,7 +52,7 @@ export const Cell = (props: ICellProps): React.ReactElement => {
         } else{
             updateCell(cellAction.Erase)
         }
-    }, [cell])
+    }, [JSON.stringify(cell)])
 
     return (
         <div

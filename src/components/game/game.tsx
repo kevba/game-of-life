@@ -1,5 +1,4 @@
 import React, {useContext, useEffect, useState } from 'react';
-import { ICell } from './boardstate';
 import { GameField } from './gameField';
 import { Typography, Button, Grid } from '@material-ui/core';
 import { BoardContext } from './index';

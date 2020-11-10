@@ -1,31 +1,31 @@
 import React, { useCallback, useContext } from 'react';
-import { cellAction } from './clickActions';
-import { BoardDispatch, BoardContext } from './index';
+import { cellAction } from '../clickActions';
+import { BoardDispatch } from '../index';
 import { Cell } from './cell';
 
 interface ICellContainerProps {
-    cellNumber: number;
+    cell: ICell
+    cellNumber: number
 }
 
 export const CellContainer = (props: ICellContainerProps): React.ReactElement => {
-    const {cellNumber} = props
+    const {cell, cellNumber} = props
     const dispatch = useContext(BoardDispatch)
-    const {cells} = useContext(BoardContext)
 
     const updateCell = useCallback((action: cellAction) => {
         switch(action) {
             case cellAction.Create:
-                dispatch({type: "setCell", cellNumber: cellNumber, cell: {...cells[cellNumber], alive: true}})
+                dispatch({type: "setCell", cellNumber: cellNumber, cell: {...cell, alive: true}})
                 break
             case cellAction.Erase:
-                dispatch({type: "setCell", cellNumber: cellNumber, cell: {...cells[cellNumber], alive: false}})
+                dispatch({type: "setCell", cellNumber: cellNumber, cell: {...cell, alive: false}})
                 break
         }
-    }, [cells, cellNumber])
+    }, [cell, cellNumber])
 
     return (
         <Cell
             updateCell={updateCell}
-            cell={cells[cellNumber]} />
+            cell={cell} />
     )
 }
