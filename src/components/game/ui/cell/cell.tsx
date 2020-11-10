@@ -1,8 +1,7 @@
 import { makeStyles } from '@material-ui/core';
-import React, { useCallback, useContext, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { cellAction } from '../clickActions';
-import { BoardDispatch } from '../index';
-import { ICell } from '../boardstate';
+import { ICell } from '../../logic/cells';
 
 interface ICellProps {
     updateCell: (action: cellAction) => void;
@@ -47,7 +46,7 @@ export const Cell = (props: ICellProps): React.ReactElement => {
     }, [])
 
     const handleClick = useCallback(() => {
-        if (!cell.alive)  {
+        if (cell.type === "empty")  {
             updateCell(cellAction.Create)
         } else{
             updateCell(cellAction.Erase)
@@ -62,7 +61,7 @@ export const Cell = (props: ICellProps): React.ReactElement => {
             onContextMenu={(e) => e.preventDefault()}>
             <svg viewBox={"0 0 15 10"} className={classes.cell}>
                 <text x={"0"} y={"10"} >
-                    {cell.alive ? `${cell.icon}` : ""}
+                    {cell.icon}
                 </text>
             </svg>
         </div>

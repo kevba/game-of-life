@@ -1,7 +1,10 @@
 import React, { useCallback, useContext } from 'react';
 import { cellAction } from '../clickActions';
-import { BoardDispatch } from '../index';
+import { BoardDispatch } from '../../index';
+import { ICell } from '../../logic/cells';
 import { Cell } from './cell';
+import { CreateTreeCell } from '../../logic/cells/tree';
+import { CreateEmptyCell } from '../../logic/cells/empty';
 
 interface ICellContainerProps {
     cell: ICell
@@ -15,10 +18,10 @@ export const CellContainer = (props: ICellContainerProps): React.ReactElement =>
     const updateCell = useCallback((action: cellAction) => {
         switch(action) {
             case cellAction.Create:
-                dispatch({type: "setCell", cellNumber: cellNumber, cell: {...cell, alive: true}})
+                dispatch({type: "setCell", cellNumber: cellNumber, cell: {...CreateTreeCell()}})
                 break
             case cellAction.Erase:
-                dispatch({type: "setCell", cellNumber: cellNumber, cell: {...cell, alive: false}})
+                dispatch({type: "setCell", cellNumber: cellNumber, cell: {...CreateEmptyCell()}})
                 break
         }
     }, [cell, cellNumber])

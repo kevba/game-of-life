@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useMemo } from 'react';
+import React, { useContext, useMemo } from 'react';
 
 import { Row } from './row';
-import { BoardContext } from './index';
+import { BoardContext } from '../index';
 
 export const GameField = (): React.ReactElement => {
     const {cells, width} = useContext(BoardContext)
@@ -21,10 +21,6 @@ export const GameField = (): React.ReactElement => {
 
         return rows
     }, [JSON.stringify(cells)])
-
-    // useEffect(() => console.log("updated cells", [cells]))
-    // useEffect(() => console.log("updated rowNumber", [rowNumber]))
-    // useEffect(() => console.log("updated rowCells", [rowCells]))
 
     return (
         <div>

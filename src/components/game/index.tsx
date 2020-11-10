@@ -1,6 +1,7 @@
-import React, { useReducer, useState, useEffect, useCallback } from 'react';
-import { ICell, simulateStep, emptyCells, createDefaultCell } from './boardstate';
-import { Game } from './game';
+import React, { useReducer, useState, useCallback } from 'react';
+import { simulateStep, emptyCells } from './logic';
+import { Game } from './ui/game';
+import { ICell } from './logic/cells';
 
 const DEFAULT_WIDTH = 20
 

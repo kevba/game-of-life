@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState } from 'react';
 import { GameField } from './gameField';
 import { Typography, Button, Grid } from '@material-ui/core';
-import { BoardContext } from './index';
+import { BoardContext } from '../index';
 
 const DEFAULT_SPEED = 500
 const MAX_SPEED = 100
