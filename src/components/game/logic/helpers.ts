@@ -18,17 +18,28 @@ export const getCellNeighbours = (
     cellNum: number
 ): ICell[] => {
     let neigbourValues = [];
+    let relativeCellIndex = cellNum % boardWidth;
 
-    for (let topIndex of [-1, 0, 1]) {
-        neigbourValues.push(getCell(cells, cellNum - topIndex - boardWidth));
-    }
+    const indexMasks = [
+        [-1, 0, 1],
+        [-1, 1],
+        [-1, 0, 1],
+    ];
 
-    for (let middleIndex of [-1, 1]) {
-        neigbourValues.push(getCell(cells, cellNum - middleIndex));
-    }
+    for (let [i, indexMask] of indexMasks.entries()) {
+        let boardWidthModifier = (i - 1) * boardWidth;
 
-    for (let bottomIndex of [-1, 0, 1]) {
-        neigbourValues.push(getCell(cells, cellNum - bottomIndex + boardWidth));
+        for (let offset of indexMask) {
+            let index = cellNum - offset - boardWidthModifier;
+            let relativeIndex = relativeCellIndex - offset;
+
+            if (relativeIndex < 0 || relativeIndex > 19) {
+                neigbourValues.push(CreateEmptyCell());
+                break;
+            }
+
+            neigbourValues.push(getCell(cells, index));
+        }
     }
 
     return neigbourValues;

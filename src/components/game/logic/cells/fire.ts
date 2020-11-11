@@ -9,23 +9,36 @@ export const CreateFireCell = (): ICell => {
     };
 };
 
-const MIN_NEEDED_TREES = 5;
+const MIN_NEEDED_TREES = 4;
+const MIN_NEEDED_FIRE = 1;
 
 export const simulateFire = (
     board: ICell[],
     boardWidth: number,
     cellNumber: number
-): ICell => {
+): ICell | null => {
     let cell = board[cellNumber];
     let neighbours = getCellNeighbours(board, boardWidth, cellNumber);
     let treeNeighbours = countType(neighbours, "tree");
+    let fireNeighbours = countType(neighbours, "fire");
 
-    // If the cell is empty, start a fire if enough trees are nearby.
-    if (cell.type === "empty") {
-        if (treeNeighbours > MIN_NEEDED_TREES) {
+    if (cell.type === "tree") {
+        // IF there are too many trees nearby ignite the tree.
+        if (treeNeighbours >= MIN_NEEDED_TREES) {
+            return CreateFireCell();
+        }
+
+        // If there is already a fire nearby, this tree will combust as well
+        if (fireNeighbours >= MIN_NEEDED_FIRE) {
             return CreateFireCell();
         }
     }
 
-    return CreateEmptyCell();
+    // If the cell is already a fire, clear the tile, meaning the fire has burned out
+    if (cell.type === "fire") {
+        return CreateEmptyCell();
+    }
+
+    // No Change happenend according to the rules for this cell.
+    return null;
 };

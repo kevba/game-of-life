@@ -1,4 +1,4 @@
-import { ICell } from "./cells";
+import { ICell, CellSimulator } from "./cells";
 import { CreateEmptyCell } from "./cells/empty";
 import { simulateFire } from "./cells/fire";
 import { simulateTree } from "./cells/tree";
@@ -24,22 +24,21 @@ export const simulateStep = (cells: ICell[], boardWidth: number): ICell[] => {
     return newCells;
 };
 
+const cellSimulators: CellSimulator[] = [simulateTree, simulateFire];
+
 export const simulateCell = (
     board: ICell[],
     boardWidth: number,
     cellNumber: number
 ): ICell => {
-    const cell = board[cellNumber];
-
-    let newCell: ICell = CreateEmptyCell();
-
-    if (cell.type === "empty" || cell.type === "tree") {
-        newCell = simulateTree(board, boardWidth, cellNumber);
+    // Return the value from the first simulator that returns a value.
+    for (let simulate of cellSimulators) {
+        let simResult = simulate(board, boardWidth, cellNumber);
+        if (simResult !== null) {
+            return simResult;
+        }
     }
 
-    if (newCell.type === "empty" || cell.type === "fire") {
-        newCell = simulateFire(board, boardWidth, cellNumber);
-    }
-
-    return newCell;
+    // If none of the simulators whats to do anyting with the cell, just return the original one
+    return board[cellNumber];
 };
