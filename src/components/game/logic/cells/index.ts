@@ -1,4 +1,4 @@
-export type cellTypes = "empty" | "tree" | "fire";
+export type cellTypes = "gol" | "empty" | "tree" | "fire";
 
 export interface ICell {
     type: cellTypes;

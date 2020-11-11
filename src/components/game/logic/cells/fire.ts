@@ -9,8 +9,8 @@ export const CreateFireCell = (): ICell => {
     };
 };
 
-const MIN_NEEDED_TREES = 4;
-const MIN_NEEDED_FIRE = 1;
+const MIN_NEEDED_TREES = 5;
+const MIN_NEEDED_FIRE = 2;
 
 export const simulateFire = (
     board: ICell[],
@@ -23,12 +23,12 @@ export const simulateFire = (
     let fireNeighbours = countType(neighbours, "fire");
 
     if (cell.type === "tree") {
-        // IF there are too many trees nearby ignite the tree.
+        // If there are too many other trees nearby ignite the tree.
         if (treeNeighbours >= MIN_NEEDED_TREES) {
             return CreateFireCell();
         }
 
-        // If there is already a fire nearby, this tree will combust as well
+        // If there is already some fire nearby, this tree will combust as well
         if (fireNeighbours >= MIN_NEEDED_FIRE) {
             return CreateFireCell();
         }
@@ -39,6 +39,6 @@ export const simulateFire = (
         return CreateEmptyCell();
     }
 
-    // No Change happenend according to the rules for this cell.
+    // No change happenend according to the rules for this cell.
     return null;
 };

@@ -9,9 +9,7 @@ export const CreateTreeCell = (): ICell => {
     };
 };
 
-const MIN_NEEDED_LIVING_CELLS = 2;
-const MAX_NEEDED_LIVING_CELLS = 3;
-const REPRODUCE_NEEDED = 3;
+const REPRODUCE_NEEDED = 2;
 
 export const simulateTree = (
     board: ICell[],
@@ -22,18 +20,8 @@ export const simulateTree = (
     let neighbours = getCellNeighbours(board, boardWidth, cellNumber);
     let treeNeighbours = countType(neighbours, "tree");
 
-    // the cell is alive, check its neighbours to see if it continues to do so.
-    if (cell.type === "tree") {
-        // the tree dies if there are not enough neighbours
-        if (treeNeighbours < MIN_NEEDED_LIVING_CELLS) {
-            return CreateEmptyCell();
-            // the tree dies if there are too many neighbours, as by overpopulation.
-        } else if (treeNeighbours > MAX_NEEDED_LIVING_CELLS) {
-            return CreateEmptyCell();
-        }
-    }
-
-    // the cell is dead/unpopulated, check its neighbours to see if a new one can be produced.
+    // Trees will never die, they only grow until something else wipes them out.
+    // Trees can grow when a cell is empty, but there are other trees nearby
     if (cell.type === "empty") {
         // There are enough neighbours to reporduce, so a new tree will spawn.
         if (treeNeighbours === REPRODUCE_NEEDED) {
