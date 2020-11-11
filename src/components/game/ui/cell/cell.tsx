@@ -12,9 +12,9 @@ const useStyles = makeStyles({
     root: {
         position: "relative",
         flexBasis: `100%`,
-        border: "1px solid",
-        boxSizing: "border-box",
-
+        // border: "1px solid",
+        // boxSizing: "border-box",
+        // borderColor: "#c0c0c0",
         "&::before": {
             content: '""',
             display: "block",

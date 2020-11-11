@@ -2,9 +2,21 @@ import React, { useContext, useMemo } from 'react';
 
 import { Row } from './row';
 import { BoardContext } from '../index';
+import { makeStyles } from '@material-ui/core';
+
+const useStyles = makeStyles({
+    root: {
+        border: "2px solid",
+        boxSizing: "border-box",
+        borderColor: "#c0c0c0",
+        maxWidth: "70vh",
+    }
+})
 
 export const GameField = (): React.ReactElement => {
     const {cells, width} = useContext(BoardContext)
+
+    const classes = useStyles()
 
     const rows = useMemo((): React.ReactElement[] => {
         let rows: React.ReactElement[] = []
@@ -23,7 +35,7 @@ export const GameField = (): React.ReactElement => {
     }, [JSON.stringify(cells)])
 
     return (
-        <div>
+        <div className={classes.root}>
             {rows}
         </div>
     )

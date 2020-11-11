@@ -1,4 +1,5 @@
 import { ICell, CellSimulator } from "./cells";
+import { simulateAsh } from "./cells/ash";
 import { CreateEmptyCell } from "./cells/empty";
 import { simulateFire } from "./cells/fire";
 import { simulateTree } from "./cells/tree";
@@ -24,7 +25,11 @@ export const simulateStep = (cells: ICell[], boardWidth: number): ICell[] => {
     return newCells;
 };
 
-const cellSimulators: CellSimulator[] = [simulateTree, simulateFire];
+const cellSimulators: CellSimulator[] = [
+    simulateTree,
+    simulateFire,
+    simulateAsh,
+];
 
 export const simulateCell = (
     board: ICell[],

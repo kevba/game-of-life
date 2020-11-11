@@ -12,7 +12,6 @@ const useStyles = makeStyles({
     row: {
         display: "flex",
         flexWrap: "nowrap",
-        maxWidth: "70vh",
     },
 })
 

@@ -30,15 +30,14 @@ export const getCellNeighbours = (
         let boardWidthModifier = (i - 1) * boardWidth;
 
         for (let offset of indexMask) {
-            let index = cellNum - offset - boardWidthModifier;
+            let index = cellNum - offset + boardWidthModifier;
             let relativeIndex = relativeCellIndex - offset;
 
-            if (relativeIndex < 0 || relativeIndex > 19) {
+            if (relativeIndex < 0 || relativeIndex >= boardWidth) {
                 neigbourValues.push(CreateEmptyCell());
-                break;
+            } else {
+                neigbourValues.push(getCell(cells, index));
             }
-
-            neigbourValues.push(getCell(cells, index));
         }
     }
 

@@ -3,7 +3,7 @@ import { simulateStep, emptyCells } from './logic';
 import { Game } from './ui/game';
 import { ICell } from './logic/cells';
 
-const DEFAULT_WIDTH = 20
+const DEFAULT_WIDTH = 40
 
 type BoardState = {
     cells: ICell[];

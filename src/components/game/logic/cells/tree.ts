@@ -1,6 +1,5 @@
 import { ICell } from ".";
 import { getCellNeighbours, countType } from "../helpers";
-import { CreateEmptyCell } from "./empty";
 
 export const CreateTreeCell = (): ICell => {
     return {
@@ -9,7 +8,7 @@ export const CreateTreeCell = (): ICell => {
     };
 };
 
-const REPRODUCE_NEEDED = 2;
+const REPRODUCE_NEEDED = 1;
 
 export const simulateTree = (
     board: ICell[],
@@ -18,13 +17,14 @@ export const simulateTree = (
 ): ICell | null => {
     let cell = board[cellNumber];
     let neighbours = getCellNeighbours(board, boardWidth, cellNumber);
+
     let treeNeighbours = countType(neighbours, "tree");
 
     // Trees will never die, they only grow until something else wipes them out.
     // Trees can grow when a cell is empty, but there are other trees nearby
     if (cell.type === "empty") {
         // There are enough neighbours to reporduce, so a new tree will spawn.
-        if (treeNeighbours === REPRODUCE_NEEDED) {
+        if (treeNeighbours >= REPRODUCE_NEEDED) {
             return CreateTreeCell();
         }
     }
