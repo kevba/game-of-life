@@ -1,11 +1,14 @@
-import { ICell, CellSimulator } from "./cells";
-import { simulateAsh } from "./cells/ash";
-import { CreateEmptyCell } from "./cells/empty";
-import { simulateFire } from "./cells/fire";
-import { simulateTree } from "./cells/tree";
+import { CreateEmptyCell } from "./cells/types/empty";
 
-export const emptyCells = (size: number): ICell[] => {
-    let state: ICell[] = [];
+import { simulateAsh } from "./cells/types/ash";
+import { simulateFire } from "./cells/types/fire";
+import { simulateTree } from "./cells/types/tree";
+
+import { Cell } from "./cells";
+import { CellSimulator } from "./cells";
+
+export const emptyCells = (size: number): Cell[] => {
+    let state: Cell[] = [];
 
     for (let i = 0; i < size * size; i++) {
         state.push(CreateEmptyCell());
@@ -14,8 +17,8 @@ export const emptyCells = (size: number): ICell[] => {
     return state;
 };
 
-export const simulateStep = (cells: ICell[], boardWidth: number): ICell[] => {
-    let newCells: ICell[] = [];
+export const simulateStep = (cells: Cell[], boardWidth: number): Cell[] => {
+    let newCells: Cell[] = [];
 
     for (let cellNum = 0; cellNum < cells.length; cellNum++) {
         let newCell = simulateCell(cells, boardWidth, cellNum);
@@ -32,10 +35,10 @@ const cellSimulators: CellSimulator[] = [
 ];
 
 export const simulateCell = (
-    board: ICell[],
+    board: Cell[],
     boardWidth: number,
     cellNumber: number
-): ICell => {
+): Cell => {
     // Return the value from the first simulator that returns a value.
     for (let simulate of cellSimulators) {
         let simResult = simulate(board, boardWidth, cellNumber);

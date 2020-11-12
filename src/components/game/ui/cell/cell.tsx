@@ -1,11 +1,11 @@
 import { makeStyles } from '@material-ui/core';
 import React, { useCallback } from 'react';
 import { cellAction } from '../clickActions';
-import { ICell } from '../../logic/cells';
+import { Cell } from '../../logic/cells';
 
 interface ICellProps {
     updateCell: (action: cellAction) => void;
-    cell: ICell;
+    cell: Cell;
 }
 
 const useStyles = makeStyles({
@@ -33,7 +33,7 @@ const useStyles = makeStyles({
     }
 })
 
-export const Cell = (props: ICellProps): React.ReactElement => {
+export const CellDisplay = (props: ICellProps): React.ReactElement => {
     const {cell, updateCell} = props
     const classes = useStyles(props)
 

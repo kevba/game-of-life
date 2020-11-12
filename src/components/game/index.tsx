@@ -1,12 +1,12 @@
 import React, { useReducer, useState, useCallback } from 'react';
 import { simulateStep, emptyCells } from './logic';
 import { Game } from './ui/game';
-import { ICell } from './logic/cells';
+import { ICell } from './logic/cells/types/base';
 
 const DEFAULT_WIDTH = 40
 
 type BoardState = {
-    cells: ICell[];
+    cells: Cell[];
     width: number
 }
 

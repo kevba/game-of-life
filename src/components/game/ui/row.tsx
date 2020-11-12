@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react';
 import { makeStyles } from '@material-ui/core';
 import { CellContainer } from './cell/cellContainer';
-import { ICell } from '../logic/cells';
+import { ICell } from '../logic/cells/types/base';
 
 interface IRowProps {
     rowNumber: number;
-    rowCells: ICell[];
+    rowCells: Cell[];
 }
 
 const useStyles = makeStyles({

@@ -1,9 +1,14 @@
-import { ICell } from ".";
-import { getCellNeighbours, countType } from "../helpers";
+import { ICell } from "./base";
+import { getCellNeighbours, countType } from "../../helpers";
 import { CreateEmptyCell } from "./empty";
+import { Cell } from "..";
+
+export interface IGOLCell extends ICell {
+    type: "gol";
+}
 
 // GOL behaves like the original Game of Life cells.
-export const CreateGOLCell = (): ICell => {
+export const CreateGOLCell = (): IGOLCell => {
     return {
         type: "gol",
         icon: "X",
@@ -15,10 +20,10 @@ const MAX_NEEDED_LIVING_CELLS = 3;
 const REPRODUCE_NEEDED = 3;
 
 export const simulateGOL = (
-    board: ICell[],
+    board: Cell[],
     boardWidth: number,
     cellNumber: number
-): ICell | null => {
+): Cell | null => {
     let cell = board[cellNumber];
     let neighbours = getCellNeighbours(board, boardWidth, cellNumber);
     let golNeighbours = countType(neighbours, "gol");

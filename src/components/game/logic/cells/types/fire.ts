@@ -1,8 +1,13 @@
-import { ICell } from ".";
-import { getCellNeighbours, countType } from "../helpers";
+import { Cell } from "..";
+import { getCellNeighbours, countType } from "../../helpers";
 import { CreateAshCell } from "./ash";
+import { ICell } from "./base";
 
-export const CreateFireCell = (): ICell => {
+export interface IFireCell extends ICell {
+    type: "fire";
+}
+
+export const CreateFireCell = (): IFireCell => {
     return {
         type: "fire",
         icon: String.fromCodePoint(0x1f525),
@@ -15,10 +20,10 @@ const MIN_NEEDED_FIRE = 1;
 const MIN_NEEDED_TREES_NEAR_FIRE = 8;
 
 export const simulateFire = (
-    board: ICell[],
+    board: Cell[],
     boardWidth: number,
     cellNumber: number
-): ICell | null => {
+): Cell | null => {
     let cell = board[cellNumber];
     let neighbours = getCellNeighbours(board, boardWidth, cellNumber);
     let treeNeighbours = countType(neighbours, "tree");

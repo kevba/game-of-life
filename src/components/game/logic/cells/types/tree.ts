@@ -1,7 +1,12 @@
-import { ICell } from ".";
-import { getCellNeighbours, countType } from "../helpers";
+import { ICell } from "./base";
+import { getCellNeighbours, countType } from "../../helpers";
+import { Cell } from "..";
 
-export const CreateTreeCell = (): ICell => {
+export interface ITreeCell extends ICell {
+    type: "tree";
+}
+
+export const CreateTreeCell = (): ITreeCell => {
     return {
         type: "tree",
         icon: String.fromCodePoint(0x1f332),
@@ -11,10 +16,10 @@ export const CreateTreeCell = (): ICell => {
 const REPRODUCE_NEEDED = 1;
 
 export const simulateTree = (
-    board: ICell[],
+    board: Cell[],
     boardWidth: number,
     cellNumber: number
-): ICell | null => {
+): Cell | null => {
     let cell = board[cellNumber];
     let neighbours = getCellNeighbours(board, boardWidth, cellNumber);
 
