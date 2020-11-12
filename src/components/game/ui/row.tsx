@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { makeStyles } from '@material-ui/core';
 import { CellContainer } from './cell/cellContainer';
-import { ICell } from '../logic/cells/types/base';
+import { Cell } from '../logic/cells';
 
 interface IRowProps {
     rowNumber: number;

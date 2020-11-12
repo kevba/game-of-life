@@ -1,8 +1,8 @@
 import React, { useContext, useMemo } from 'react';
 
 import { Row } from './row';
-import { BoardContext } from '../index';
 import { makeStyles } from '@material-ui/core';
+import { BoardContext } from '../boardReducer';
 
 const useStyles = makeStyles({
     root: {

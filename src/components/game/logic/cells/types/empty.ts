@@ -7,6 +7,6 @@ export interface IEmptyCell extends ICell {
 export const CreateEmptyCell = (): IEmptyCell => {
     return {
         type: "empty",
-        icon: "",
+        icon: String.fromCodePoint(0x3000),
     };
 };

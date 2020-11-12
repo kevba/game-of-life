@@ -43,7 +43,7 @@ export const CellDisplay = (props: ICellProps): React.ReactElement => {
         } else if (e.buttons === 2) {
             updateCell(cellAction.Erase)
         }
-    }, [])
+    }, [updateCell])
 
     const handleClick = useCallback(() => {
         if (cell.type === "empty")  {
@@ -51,7 +51,7 @@ export const CellDisplay = (props: ICellProps): React.ReactElement => {
         } else{
             updateCell(cellAction.Erase)
         }
-    }, [JSON.stringify(cell)])
+    }, [updateCell, JSON.stringify(cell)])
 
     return (
         <div

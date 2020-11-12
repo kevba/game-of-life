@@ -1,7 +1,9 @@
 import React, {useContext, useEffect, useState } from 'react';
 import { GameField } from './gameField';
-import { Typography, Button, Grid } from '@material-ui/core';
-import { BoardContext } from '../index';
+import { IconButton, Typography, Button, Grid } from '@material-ui/core';
+import { GetCellTypes } from '../logic/cells';
+import { CellControlContext, CellControlDispatch } from '../cellControlReducer';
+import { BoardContext } from '../boardReducer';
 
 const DEFAULT_SPEED = 500
 const MAX_SPEED = 100
@@ -21,6 +23,8 @@ export const Game = (props: IGameProps): React.ReactElement => {
     const [speed, setSpeed] = useState(DEFAULT_SPEED)
 
     const board = useContext(BoardContext)
+    const cellControlDispatch = useContext(CellControlDispatch)
+    const cellControlContext = useContext(CellControlContext)
 
     useEffect(() => {
         let timer = null
@@ -125,6 +129,33 @@ export const Game = (props: IGameProps): React.ReactElement => {
         )
     }
 
+    const renderCellTypeSelectControls = ():React.ReactElement => {
+        let cellButtons: React.ReactElement[] = []
+        for (let cell of GetCellTypes()) {
+            let isSelectedType = cell.type === cellControlContext.cell.type
+        
+            cellButtons.push(
+                <Grid key={cell.type} item xs={4} >
+                    <Button
+                        variant={isSelectedType ? "contained" : "outlined"}
+                        onClick={() => cellControlDispatch({type: "setCellType", cell: cell})}
+                        color={isSelectedType ? "primary" : undefined} >
+                        {cell.icon}
+                    </Button>
+                </Grid>
+            )
+        }
+
+        return (
+            <Grid container direction={"row"}>
+                <Grid item xs={12}>
+                    <Typography variant={"subtitle1"}> Set cell type </Typography>
+                </Grid>                
+                {cellButtons}
+            </Grid>
+        )
+    }
+
     const renderControls = (): React.ReactElement => {
         return (
             <Grid container direction={"column"} justify={"flex-start"} alignContent={"space-around"}>
@@ -136,6 +167,9 @@ export const Game = (props: IGameProps): React.ReactElement => {
                 </Grid>
                 <Grid item xs={12}>
                     {renderStepSpeedControls()}
+                </Grid>
+                <Grid item xs={12}>
+                    {renderCellTypeSelectControls()}
                 </Grid>
             </Grid>
         )

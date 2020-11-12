@@ -1,3 +1,4 @@
+import { Cell } from "./cells";
 import { ICell } from "./cells/types/base";
 import { CreateEmptyCell } from "./cells/types/empty";
 
@@ -12,36 +13,54 @@ export const countType = (neighbours: Cell[], cellType: string): number => {
     return typeCount;
 };
 
+export type boardMask = { cellOffset: number; rowOffset: number }[];
+
 export const getCellNeighbours = (
     cells: Cell[],
     boardWidth: number,
-    cellNum: number
+    cellNum: number,
+    radius: number = 1
 ): Cell[] => {
-    let neigbourValues = [];
-    let relativeCellIndex = cellNum % boardWidth;
-
-    const indexMasks = [
-        [-1, 0, 1],
-        [-1, 1],
-        [-1, 0, 1],
-    ];
-
-    for (let [i, indexMask] of indexMasks.entries()) {
-        let boardWidthModifier = (i - 1) * boardWidth;
-
-        for (let offset of indexMask) {
-            let index = cellNum - offset + boardWidthModifier;
-            let relativeIndex = relativeCellIndex - offset;
-
-            if (relativeIndex < 0 || relativeIndex >= boardWidth) {
-                neigbourValues.push(CreateEmptyCell());
-            } else {
-                neigbourValues.push(getCell(cells, index));
+    let mask: boardMask = [];
+    for (let i = -radius; i <= radius; i++) {
+        for (let j = -radius; j <= radius; j++) {
+            // This is the cell itself, whcih is of course not a neighbour
+            if (i == 0 && j === 0) {
+                continue;
             }
+            mask.push({
+                cellOffset: j,
+                rowOffset: i,
+            });
         }
     }
 
-    return neigbourValues;
+    return getMaskedCells(cells, boardWidth, cellNum, mask);
+};
+
+const getMaskedCells = (
+    cells: Cell[],
+    boardWidth: number,
+    cellNum: number,
+    mask: boardMask
+): Cell[] => {
+    let maskValues = [];
+    let relativeCellIndex = cellNum % boardWidth;
+
+    for (let modifiers of mask) {
+        let boardWidthModifier = modifiers.rowOffset * boardWidth;
+
+        let index = cellNum - modifiers.cellOffset + boardWidthModifier;
+        let relativeIndex = relativeCellIndex - modifiers.cellOffset;
+
+        if (relativeIndex < 0 || relativeIndex >= boardWidth) {
+            maskValues.push(CreateEmptyCell());
+        } else {
+            maskValues.push(getCell(cells, index));
+        }
+    }
+
+    return maskValues;
 };
 
 const getCell = (cells: Cell[], cellNum: number): ICell => {

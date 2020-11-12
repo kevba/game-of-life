@@ -1,10 +1,10 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import { cellAction } from '../clickActions';
-import { BoardDispatch } from '../../index';
 import { Cell } from '../../logic/cells';
 import { CellDisplay } from './cell';
-import { CreateTreeCell } from '../../logic/cells/types/tree';
 import { CreateEmptyCell } from '../../logic/cells/types/empty';
+import { BoardDispatch } from '../../boardReducer';
+import { CellControlContext } from '../../cellControlReducer';
 
 interface ICellContainerProps {
     cell: Cell
@@ -13,18 +13,21 @@ interface ICellContainerProps {
 
 export const CellContainer = (props: ICellContainerProps): React.ReactElement => {
     const {cell, cellNumber} = props
-    const dispatch = useContext(BoardDispatch)
+    const boardDispatch = useContext(BoardDispatch)
+    const cellControlContext = useContext(CellControlContext)
 
     const updateCell = useCallback((action: cellAction) => {
+        console.log(cellControlContext.cell.type);
+        
         switch(action) {
             case cellAction.Create:
-                dispatch({type: "setCell", cellNumber: cellNumber, cell: {...CreateTreeCell()}})
+                boardDispatch({type: "setCell", cellNumber: cellNumber, cell: {...cellControlContext.cell}})
                 break
             case cellAction.Erase:
-                dispatch({type: "setCell", cellNumber: cellNumber, cell: {...CreateEmptyCell()}})
+                boardDispatch({type: "setCell", cellNumber: cellNumber, cell: {...CreateEmptyCell()}})
                 break
         }
-    }, [cell, cellNumber])
+    }, [cell, cellNumber, cellControlContext.cell.type])
 
     return (
         <CellDisplay
