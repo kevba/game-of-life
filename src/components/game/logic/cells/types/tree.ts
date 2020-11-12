@@ -9,8 +9,30 @@ export interface ITreeCell extends ICell {
 export const CreateTreeCell = (): ITreeCell => {
     return {
         type: "tree",
-        icon: String.fromCodePoint(0x1f332),
+        icon: getTreeIcon(),
     };
+};
+
+export const getTreeIcon = (): string => {
+    // Random number between 0 and 99.
+    let rand = Math.floor(Math.random() * 100);
+
+    if (rand === 0) {
+        // Christmas!
+        return String.fromCodePoint(0x1f384);
+    }
+
+    if (rand > 1 && rand <= 20) {
+        // decidious
+        return String.fromCodePoint(0x1f333);
+    }
+
+    if (rand > 20 && rand <= 40) {
+        // decidious
+        return String.fromCodePoint(0x1f331);
+    }
+
+    return String.fromCodePoint(0x1f332);
 };
 
 const REPRODUCE_NEEDED = 1;

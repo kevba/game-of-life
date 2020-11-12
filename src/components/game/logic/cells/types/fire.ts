@@ -17,7 +17,6 @@ export const CreateFireCell = (): IFireCell => {
 };
 
 const MIN_NEEDED_FIRE = 1;
-const MIN_NEEDED_TREES_NEAR_FIRE = 1;
 
 const MAX_LIFE_TIME = 3;
 
@@ -27,16 +26,12 @@ export const simulateFire = (
     cellNumber: number
 ): Cell | null => {
     let cell = board[cellNumber];
-    let neighbours = getCellNeighbours(board, boardWidth, cellNumber, 2);
-    let treeNeighbours = countType(neighbours, "tree");
-    let fireNeighbours = countType(neighbours, "fire");
+    let neighboursR1 = getCellNeighbours(board, boardWidth, cellNumber, 1);
+    let fireNeighbours = countType(neighboursR1, "fire");
 
     if (cell.type === "tree") {
         // If there is already some fire nearby, this tree will combust as well, as log as there are enough trees nearby
-        if (
-            fireNeighbours >= MIN_NEEDED_FIRE &&
-            treeNeighbours >= MIN_NEEDED_TREES_NEAR_FIRE
-        ) {
+        if (fireNeighbours >= MIN_NEEDED_FIRE) {
             return CreateFireCell();
         }
     }
