@@ -1,9 +1,10 @@
-import { CreateEmptyCell, IEmptyCell } from "./types/empty";
+import { IEmptyCell } from "./types/empty";
 import { CreateAshCell, IAshCell } from "./types/ash";
 import { CreateFireCell, IFireCell } from "./types/fire";
 import { CreateTreeCell, ITreeCell } from "./types/tree";
 import { IGOLCell } from "./types/gol";
 import { CreateWaterCell, IWaterCell } from "./types/water";
+import { CreateMountainCell, IMountainCell } from "./types/mountain";
 
 export type Cell =
     | IEmptyCell
@@ -11,15 +12,16 @@ export type Cell =
     | IFireCell
     | ITreeCell
     | IGOLCell
-    | IWaterCell;
+    | IWaterCell
+    | IMountainCell;
 
 export const GetCellTypes = (): Cell[] => {
     return [
         CreateTreeCell(),
         CreateWaterCell(),
+        CreateMountainCell(),
         CreateFireCell(),
         CreateAshCell(),
-        CreateEmptyCell(),
     ];
 };
 

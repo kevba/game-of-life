@@ -28,10 +28,13 @@ export const simulateStep = (cells: Cell[], boardWidth: number): Cell[] => {
     return newCells;
 };
 
-const cellSimulators: CellSimulator[] = [
-    simulateTree,
-    simulateFire,
-    simulateAsh,
+const cellSimulators: {
+    depedencies: Cell["type"][];
+    simulate: CellSimulator;
+}[] = [
+    { depedencies: ["tree", "empty"], simulate: simulateTree },
+    { depedencies: ["fire", "tree"], simulate: simulateFire },
+    { depedencies: ["ash"], simulate: simulateAsh },
 ];
 
 export const simulateCell = (
@@ -39,9 +42,14 @@ export const simulateCell = (
     boardWidth: number,
     cellNumber: number
 ): Cell => {
-    // Return the value from the first simulator that returns a value.
-    for (let simulate of cellSimulators) {
-        let simResult = simulate(board, boardWidth, cellNumber);
+    let cell = board[cellNumber];
+
+    for (let simulators of cellSimulators) {
+        if (!simulators.depedencies.includes(cell.type)) {
+            continue;
+        }
+
+        let simResult = simulators.simulate(board, boardWidth, cellNumber);
         if (simResult !== null) {
             return simResult;
         }
