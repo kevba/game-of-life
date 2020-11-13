@@ -23,6 +23,8 @@ export const GetCellTypes = (): Cell[] => {
     ];
 };
 
+export const CellTypeTemplates = GetCellTypes();
+
 export type CellSimulator = (
     board: Cell[],
     boardWidth: number,

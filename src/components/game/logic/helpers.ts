@@ -1,6 +1,6 @@
-import { Cell } from "./cells";
 import { ICell } from "./cells/types/base";
 import { CreateEmptyCell } from "./cells/types/empty";
+import { Cell } from "./cells";
 
 export const countType = (neighbours: Cell[], cellType: string): number => {
     let typeCount = 0;

@@ -1,9 +1,9 @@
 import React, {useContext, useEffect, useState } from 'react';
 import { GameField } from './gameField';
-import { IconButton, Typography, Button, Grid } from '@material-ui/core';
-import { GetCellTypes } from '../logic/cells';
+import { Typography, Button, Grid } from '@material-ui/core';
 import { CellControlContext, CellControlDispatch } from '../cellControlReducer';
 import { BoardContext } from '../boardReducer';
+import { CellTypeTemplates } from '../logic/cells/index';
 
 const DEFAULT_SPEED = 500
 const MAX_SPEED = 100
@@ -131,7 +131,7 @@ export const Game = (props: IGameProps): React.ReactElement => {
 
     const renderCellTypeSelectControls = ():React.ReactElement => {
         let cellButtons: React.ReactElement[] = []
-        for (let cell of GetCellTypes()) {
+        for (let cell of CellTypeTemplates) {
             let isSelectedType = cell.type === cellControlContext.cell.type
         
             cellButtons.push(

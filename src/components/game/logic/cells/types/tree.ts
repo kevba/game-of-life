@@ -1,41 +1,28 @@
 import { ICell } from "./base";
 import { getCellNeighbours, countType } from "../../helpers";
 import { Cell } from "..";
+import { CreateEmptyCell } from "./empty";
+
+const seedling = String.fromCodePoint(0x1f331);
+const evergreen = String.fromCodePoint(0x1f332);
+const decidious = String.fromCodePoint(0x1f333);
 
 export interface ITreeCell extends ICell {
     type: "tree";
+    age: number;
 }
 
 export const CreateTreeCell = (): ITreeCell => {
     return {
         type: "tree",
-        icon: getTreeIcon(),
+        icon: seedling,
+        age: 0,
     };
 };
 
-export const getTreeIcon = (): string => {
-    // Random number between 0 and 99.
-    let rand = Math.floor(Math.random() * 100);
-
-    if (rand === 0) {
-        // Christmas!
-        return String.fromCodePoint(0x1f384);
-    }
-
-    if (rand > 1 && rand <= 20) {
-        // decidious
-        return String.fromCodePoint(0x1f333);
-    }
-
-    if (rand > 20 && rand <= 40) {
-        // decidious
-        return String.fromCodePoint(0x1f331);
-    }
-
-    return String.fromCodePoint(0x1f332);
-};
-
 const REPRODUCE_NEEDED = 1;
+const REPRODUCE_AGE = 5;
+
 const WATER_REPRODUCE_NEEDED = 1;
 
 export const simulateTree = (
@@ -50,15 +37,36 @@ export const simulateTree = (
     let treeNeighbours = countType(neighboursRad1, "tree");
     let waterNeighbours = countType(neighboursRad2, "water");
 
-    // Trees will never die, they only grow until something else wipes them out.
-    // Trees can grow when a cell is empty, but there are other trees nearby
+    // Trees can grow when a cell is empty, and there are other trees nearby
     if (cell.type === "empty") {
         // There are enough neighbours to reporduce, so a new tree will spawn.
         if (
             treeNeighbours >= REPRODUCE_NEEDED &&
             waterNeighbours >= WATER_REPRODUCE_NEEDED
         ) {
-            return CreateTreeCell();
+            // Check if the trees are old enough.
+            for (let cells of neighboursRad1) {
+                if (cells.type === "tree" && cells.age >= REPRODUCE_AGE) {
+                    return CreateTreeCell();
+                }
+            }
+        }
+    }
+
+    if (cell.type === "tree") {
+        cell.age += 1;
+
+        if (waterNeighbours < WATER_REPRODUCE_NEEDED) {
+            if (cell.age >= REPRODUCE_AGE) {
+                return CreateEmptyCell();
+            }
+        }
+        if (cell.age == REPRODUCE_AGE) {
+            if (Math.random() < 0.5) {
+                cell.icon = evergreen;
+            } else {
+                cell.icon = decidious;
+            }
         }
     }
 
