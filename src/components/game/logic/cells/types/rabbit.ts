@@ -29,12 +29,16 @@ export const reproduceRabbit = (
     cellNumber: number
 ): IRabbitCell | undefined => {
     let neighboursRad1 = getCellNeighbours(board, boardWidth, cellNumber, 1);
+    let neighboursRad2 = getCellNeighbours(board, boardWidth, cellNumber, 1);
 
     let treeNeighbours = countType(neighboursRad1, "tree");
     let rabbitNeighbours = countType(neighboursRad1, "rabbit");
+    let rabbitNeighboursRad2 = countType(neighboursRad2, "rabbit");
 
-    // If there are enough trees, a rabbit will magically spawn from nothing.
-    if (treeNeighbours >= REPRODUCE_NEEDED_TREE) {
+    let rabbitNeighboursWide = countType(neighboursRad1, "rabbit");
+
+    // If there are enough trees and no other rabbits are close by, a rabbit will magically spawn from nothing.
+    if (treeNeighbours >= REPRODUCE_NEEDED_TREE && rabbitNeighboursRad2 === 0) {
         return CreateRabbitCell();
     }
 

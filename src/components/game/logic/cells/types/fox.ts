@@ -69,9 +69,12 @@ export const simulateFox = (
         return CreateEmptyCell();
     }
 
-    // If there are not enough rabbits, the fox will unfortunately die.
+    // If there are not enough rabbits, the fox will unfortunately starve to death.
     if (rabbitNeighbours < RABBITS_NEEDED) {
-        return CreateEmptyCell();
+        // The fox has a small chance to not die of starvation.
+        if (random(80 + cell.age * 10)) {
+            return CreateEmptyCell();
+        }
     }
 
     cell.age += 1;
