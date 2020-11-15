@@ -1,5 +1,4 @@
-import { ICell, ILivingCell } from "./base";
-import { CreateMountainCell } from "./mountain";
+import { ICell } from "./base";
 import { Cell } from "..";
 
 import { random } from "../../helpers";

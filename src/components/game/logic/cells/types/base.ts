@@ -3,7 +3,15 @@ export interface ICell {
     icon: string;
 }
 
-export interface ILivingCell extends ICell {
+export interface IAgingCell extends ICell {
     age: number;
     maxAge: number;
 }
+
+export interface ILivingCell extends IAgingCell {
+    burnable: boolean;
+}
+
+export const instanceOfLivingCell = (object: ICell): object is ILivingCell => {
+    return "burnable" in object;
+};

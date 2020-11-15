@@ -15,6 +15,7 @@ export const CreateFoxCell = (): IFoxCell => {
         icon: fox,
         age: 0,
         maxAge: 5,
+        burnable: true,
     };
 };
 

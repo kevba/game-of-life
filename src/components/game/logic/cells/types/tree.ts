@@ -18,13 +18,13 @@ export const CreateTreeCell = (): ITreeCell => {
         icon: seedling,
         age: 0,
         maxAge: 15,
+        burnable: true,
     };
 };
 
 const REPRODUCE_NEEDED = 1;
 const REPRODUCE_AGE = 3;
 const WATER_REPRODUCE_NEEDED = 1;
-const MAX_ALLOWED_FIRE = 0;
 const MIN_NEEDED_WATER = 1;
 
 export const reproduceTree = (
@@ -61,7 +61,6 @@ export const simulateTree = (
     cellNumber: number
 ): Cell => {
     let neighboursR1 = getCellNeighbours(board, boardWidth, cellNumber, 1);
-    let fireNeighbours = countType(neighboursR1, "fire");
 
     let neighboursR2 = getCellNeighbours(board, boardWidth, cellNumber, 2);
     let waterNeighbours = countType(neighboursR2, "water");
@@ -70,11 +69,6 @@ export const simulateTree = (
         if (c.type === "volcano" && c.isErupting) {
             return CreateFireCell();
         }
-    }
-
-    // If there is already some fire nearby, this tree will combust.
-    if (fireNeighbours > MAX_ALLOWED_FIRE) {
-        return CreateFireCell();
     }
 
     // There is not enough water, so the tree dies.

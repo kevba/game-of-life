@@ -1,11 +1,10 @@
 import { CreateEmptyCell } from "./empty";
-import { ICell, ILivingCell } from "./base";
+import { ICell, IAgingCell } from "./base";
 import { Cell } from "..";
 import { CreateTreeCell } from "./tree";
 import { random } from "../../helpers";
 
-// Really stretching the definition of living here.
-export interface IAshCell extends ILivingCell {
+export interface IAshCell extends IAgingCell {
     type: "ash";
 }
 

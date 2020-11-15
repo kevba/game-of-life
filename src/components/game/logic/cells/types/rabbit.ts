@@ -2,7 +2,6 @@ import { ILivingCell } from "./base";
 import { getCellNeighbours, countType, random } from "../../helpers";
 import { Cell } from "..";
 import { CreateEmptyCell } from "./empty";
-import { CreateFireCell } from "./fire";
 
 const rabbit = String.fromCodePoint(0x1f407);
 
@@ -16,6 +15,7 @@ export const CreateRabbitCell = (): IRabbitCell => {
         icon: rabbit,
         age: 0,
         maxAge: 2,
+        burnable: true,
     };
 };
 

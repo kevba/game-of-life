@@ -1,9 +1,9 @@
 import { Cell } from "..";
 import { getCellNeighbours, countType } from "../../helpers";
 import { CreateAshCell } from "./ash";
-import { ICell, ILivingCell } from "./base";
+import { ICell, IAgingCell } from "./base";
 
-export interface IFireCell extends ILivingCell {
+export interface IFireCell extends IAgingCell {
     type: "fire";
 }
 
