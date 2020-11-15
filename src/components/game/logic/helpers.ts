@@ -70,3 +70,7 @@ const getCell = (cells: Cell[], cellNum: number): ICell => {
 
     return cells[cellNum];
 };
+
+export const random = (percent: number): boolean => {
+    return Math.random() * 100 < percent;
+};

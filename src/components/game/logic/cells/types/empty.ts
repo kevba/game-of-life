@@ -27,9 +27,10 @@ export const simulateEmpty = (
     }
 
     let neighboursRad1 = getCellNeighbours(board, boardWidth, cellNumber, 1);
-    let volcanoCount = countType(neighboursRad1, "volcano");
-    if (volcanoCount > 0) {
-        return CreateFireCell();
+    for (let c of neighboursRad1) {
+        if (c.type === "volcano" && c.isErupting) {
+            return CreateFireCell();
+        }
     }
 
     // No Change happenend according to the rules for this cell.

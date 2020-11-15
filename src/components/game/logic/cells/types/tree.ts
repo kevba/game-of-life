@@ -1,5 +1,5 @@
 import { ILivingCell } from "./base";
-import { getCellNeighbours, countType } from "../../helpers";
+import { getCellNeighbours, countType, random } from "../../helpers";
 import { Cell } from "..";
 import { CreateEmptyCell } from "./empty";
 import { CreateFireCell } from "./fire";
@@ -22,7 +22,7 @@ export const CreateTreeCell = (): ITreeCell => {
 };
 
 const REPRODUCE_NEEDED = 1;
-const REPRODUCE_AGE = 5;
+const REPRODUCE_AGE = 3;
 const WATER_REPRODUCE_NEEDED = 1;
 const MAX_ALLOWED_FIRE = 0;
 const MIN_NEEDED_WATER = 1;
@@ -66,18 +66,18 @@ export const simulateTree = (
     let neighboursR2 = getCellNeighbours(board, boardWidth, cellNumber, 2);
     let waterNeighbours = countType(neighboursR2, "water");
 
-    let neighboursRad1 = getCellNeighbours(board, boardWidth, cellNumber, 1);
-    let volcanoCount = countType(neighboursRad1, "volcano");
-
-    if (volcanoCount > 0) {
-        return CreateFireCell();
+    for (let c of neighboursR1) {
+        if (c.type === "volcano" && c.isErupting) {
+            return CreateFireCell();
+        }
     }
+
     // If there is already some fire nearby, this tree will combust.
     if (fireNeighbours > MAX_ALLOWED_FIRE) {
         return CreateFireCell();
     }
 
-    // There is not enoug water, so the tree dies.
+    // There is not enough water, so the tree dies.
     if (waterNeighbours < MIN_NEEDED_WATER) {
         return CreateEmptyCell();
     }
@@ -86,11 +86,14 @@ export const simulateTree = (
 
     // The tree got too old, RIP.
     if (cell.age > cell.maxAge) {
-        return CreateEmptyCell();
+        // The tree gets a bit of a change to live on.
+        if (random(50 + cell.age)) {
+            return CreateEmptyCell();
+        }
     }
 
     if (cell.age == REPRODUCE_AGE) {
-        if (Math.random() < 0.5) {
+        if (random(50)) {
             cell.icon = evergreen;
         } else {
             cell.icon = decidious;

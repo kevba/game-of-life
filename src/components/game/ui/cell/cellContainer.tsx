@@ -16,16 +16,20 @@ export const CellContainer = (props: ICellContainerProps): React.ReactElement =>
     const boardDispatch = useContext(BoardDispatch)
     const cellControlContext = useContext(CellControlContext)
 
+
     const updateCell = useCallback((action: cellAction) => {        
         switch(action) {
             case cellAction.Create:
-                boardDispatch({type: "setCell", cellNumber: cellNumber, cell: {...cellControlContext.cell}})
+                if (cellControlContext.overwrite || cell.type === "empty") {
+                    boardDispatch({type: "setCell", cellNumber: cellNumber, cell: {...cellControlContext.cell}})
+                }
+
                 break
             case cellAction.Erase:
                 boardDispatch({type: "setCell", cellNumber: cellNumber, cell: {...CreateEmptyCell()}})
                 break
         }
-    }, [cell, cellNumber, cellControlContext.cell.type])
+    }, [cell, cellNumber, JSON.stringify(cellControlContext)])
 
     return (
         <CellDisplay

@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState } from 'react';
 import { GameField } from './gameField';
-import { Typography, Button, Grid } from '@material-ui/core';
+import { Typography, Button, Grid, Checkbox, FormControlLabel } from '@material-ui/core';
 import { CellControlContext, CellControlDispatch } from '../cellControlReducer';
 import { BoardContext } from '../boardReducer';
 import { CellTypeTemplates } from '../logic/cells/index';
@@ -18,7 +18,7 @@ interface IGameProps {
 
 export const Game = (props: IGameProps): React.ReactElement => {
     const {setBoardSize, resetBoard, nextStep, currentStep} = props
-    
+
     const [isRunning, setIsRunning] = useState(false)
     const [speed, setSpeed] = useState(DEFAULT_SPEED)
 
@@ -150,7 +150,16 @@ export const Game = (props: IGameProps): React.ReactElement => {
             <Grid container direction={"row"}>
                 <Grid item xs={12}>
                     <Typography variant={"subtitle1"}> Set cell type </Typography>
-                </Grid>                
+                </Grid>
+                <Grid item xs={12}>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                            checked={cellControlContext.overwrite}
+                            onChange={() => cellControlDispatch({type: "setOverwrite", overwrite: !cellControlContext.overwrite})} />
+                        }
+                        label="Overwrite cells" />
+                </Grid>
                 {cellButtons}
             </Grid>
         )

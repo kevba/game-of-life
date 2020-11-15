@@ -13,18 +13,11 @@ export const CreateMountainCell = (): IMountainCell => {
     };
 };
 
-// a mountain has a small change to turn into a volcano. This is a scale from 1 to 1000
-const VOLCANO_CHANCE = 1;
-
 export const simulateMountain = (
     board: Cell[],
     cell: IMountainCell,
     boardWidth: number,
     cellNumber: number
 ): Cell => {
-    if (Math.floor(Math.random()) * 1000 < VOLCANO_CHANCE) {
-        return CreateVolcanoCell();
-    }
-
     return cell;
 };

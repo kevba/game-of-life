@@ -6,12 +6,16 @@ export const DEFAULT_WIDTH = 40;
 
 export type CellControlState = {
     cell: Cell;
+    overwrite: boolean;
 };
 
-export type CellControlAction = { type: "setCellType"; cell: Cell };
+export type CellControlAction =
+    | { type: "setCellType"; cell: Cell }
+    | { type: "setOverwrite"; overwrite: boolean };
 
 export const defaultCellControl = {
     cell: CreateTreeCell(),
+    overwrite: false,
 };
 
 export const cellControlReducer = (
@@ -23,6 +27,11 @@ export const cellControlReducer = (
             return {
                 ...state,
                 cell: { ...action.cell },
+            };
+        case "setOverwrite":
+            return {
+                ...state,
+                overwrite: action.overwrite,
             };
     }
 };

@@ -22,6 +22,15 @@ export const simulateFire = (
     boardWidth: number,
     cellNumber: number
 ): Cell => {
+    let neighboursR1 = getCellNeighbours(board, boardWidth, cellNumber, 1);
+
+    // Fire won't stop buring while there is an active volcano nearby.
+    for (let c of neighboursR1) {
+        if (c.type === "volcano" && c.isErupting) {
+            return cell;
+        }
+    }
+
     cell.age += 1;
 
     if (cell.age > cell.maxAge) {
