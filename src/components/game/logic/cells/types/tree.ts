@@ -17,7 +17,7 @@ export const CreateTreeCell = (): ITreeCell => {
         type: "tree",
         icon: seedling,
         age: 0,
-        maxAge: 10,
+        maxAge: 15,
     };
 };
 

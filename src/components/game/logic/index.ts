@@ -8,6 +8,8 @@ import { Cell } from "./cells";
 import { simulateMountain } from "./cells/types/mountain";
 import { simulateVolcano } from "./cells/types/volcano";
 import { simulateWater } from "./cells/types/water";
+import { simulateRabbit } from "./cells/types/rabbit";
+import { simulateFox } from "./cells/types/fox";
 
 export const emptyCells = (size: number): Cell[] => {
     let state: Cell[] = [];
@@ -52,6 +54,10 @@ export const simulateCell = (
             return simulateWater(board, cell, boardWidth, cellNumber);
         case "volcano":
             return simulateVolcano(board, cell, boardWidth, cellNumber);
+        case "rabbit":
+            return simulateRabbit(board, cell, boardWidth, cellNumber);
+        case "fox":
+            return simulateFox(board, cell, boardWidth, cellNumber);
     }
 
     // If none of the simulators whats to do anyting with the cell, just return the original one
