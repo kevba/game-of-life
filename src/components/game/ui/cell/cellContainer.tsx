@@ -16,9 +16,7 @@ export const CellContainer = (props: ICellContainerProps): React.ReactElement =>
     const boardDispatch = useContext(BoardDispatch)
     const cellControlContext = useContext(CellControlContext)
 
-    const updateCell = useCallback((action: cellAction) => {
-        console.log(cellControlContext.cell.type);
-        
+    const updateCell = useCallback((action: cellAction) => {        
         switch(action) {
             case cellAction.Create:
                 boardDispatch({type: "setCell", cellNumber: cellNumber, cell: {...cellControlContext.cell}})

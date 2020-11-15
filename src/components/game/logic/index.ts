@@ -1,11 +1,11 @@
-import { CreateEmptyCell } from "./cells/types/empty";
+import { CreateEmptyCell, simulateEmpty } from "./cells/types/empty";
 
 import { simulateAsh } from "./cells/types/ash";
 import { simulateFire } from "./cells/types/fire";
 import { simulateTree } from "./cells/types/tree";
 
 import { Cell } from "./cells";
-import { CellSimulator } from "./cells";
+import { simulateMountain } from "./cells/types/mountain";
 
 export const emptyCells = (size: number): Cell[] => {
     let state: Cell[] = [];
@@ -28,15 +28,6 @@ export const simulateStep = (cells: Cell[], boardWidth: number): Cell[] => {
     return newCells;
 };
 
-const cellSimulators: {
-    depedencies: Cell["type"][];
-    simulate: CellSimulator;
-}[] = [
-    { depedencies: ["tree", "empty"], simulate: simulateTree },
-    { depedencies: ["fire", "tree"], simulate: simulateFire },
-    { depedencies: ["ash"], simulate: simulateAsh },
-];
-
 export const simulateCell = (
     board: Cell[],
     boardWidth: number,
@@ -44,17 +35,19 @@ export const simulateCell = (
 ): Cell => {
     let cell = board[cellNumber];
 
-    for (let simulators of cellSimulators) {
-        if (!simulators.depedencies.includes(cell.type)) {
-            continue;
-        }
-
-        let simResult = simulators.simulate(board, boardWidth, cellNumber);
-        if (simResult !== null) {
-            return simResult;
-        }
+    switch (cell.type) {
+        case "empty":
+            return simulateEmpty(board, cell, boardWidth, cellNumber);
+        case "tree":
+            return simulateTree(board, cell, boardWidth, cellNumber);
+        case "fire":
+            return simulateFire(board, cell, boardWidth, cellNumber);
+        case "ash":
+            return simulateAsh(board, cell, boardWidth, cellNumber);
+        case "mountain":
+            return simulateMountain(board, cell, boardWidth, cellNumber);
     }
 
     // If none of the simulators whats to do anyting with the cell, just return the original one
-    return board[cellNumber];
+    return cell;
 };

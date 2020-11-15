@@ -10,3 +10,13 @@ export const CreateWaterCell = (): IWaterCell => {
         icon: String.fromCodePoint(0x1f30a),
     };
 };
+
+// export const simulateWater = (
+//     board: Cell[],
+//     cell: IWaterCell,
+//     boardWidth: number,
+//     cellNumber: number
+// ): Cell => {
+//     // Water cells never dissapear.
+//     return cell;
+// };

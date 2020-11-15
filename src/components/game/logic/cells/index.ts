@@ -5,6 +5,7 @@ import { CreateTreeCell, ITreeCell } from "./types/tree";
 import { IGOLCell } from "./types/gol";
 import { CreateWaterCell, IWaterCell } from "./types/water";
 import { CreateMountainCell, IMountainCell } from "./types/mountain";
+import { CreateVolcanoCell, IVolcanoCell } from "./types/volcano";
 
 export type Cell =
     | IEmptyCell
@@ -13,7 +14,8 @@ export type Cell =
     | ITreeCell
     | IGOLCell
     | IWaterCell
-    | IMountainCell;
+    | IMountainCell
+    | IVolcanoCell;
 
 export const GetCellTypes = (): Cell[] => {
     return [
@@ -22,13 +24,8 @@ export const GetCellTypes = (): Cell[] => {
         CreateMountainCell(),
         CreateFireCell(),
         CreateAshCell(),
+        CreateVolcanoCell(),
     ];
 };
 
 export const CellTypeTemplates = GetCellTypes();
-
-export type CellSimulator = (
-    board: Cell[],
-    boardWidth: number,
-    cellNumber: number
-) => Cell | null;

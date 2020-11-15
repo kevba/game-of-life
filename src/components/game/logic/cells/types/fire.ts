@@ -1,50 +1,32 @@
 import { Cell } from "..";
 import { getCellNeighbours, countType } from "../../helpers";
 import { CreateAshCell } from "./ash";
-import { ICell } from "./base";
+import { ICell, ILivingCell } from "./base";
 
-export interface IFireCell extends ICell {
+export interface IFireCell extends ILivingCell {
     type: "fire";
-    lifeCount: number;
 }
 
 export const CreateFireCell = (): IFireCell => {
     return {
         type: "fire",
         icon: String.fromCodePoint(0x1f525),
-        lifeCount: 0,
+        age: 0,
+        maxAge: 2,
     };
 };
 
-const MIN_NEEDED_FIRE = 1;
-
-const MAX_LIFE_TIME = 3;
-
 export const simulateFire = (
     board: Cell[],
+    cell: IFireCell,
     boardWidth: number,
     cellNumber: number
-): Cell | null => {
-    let cell = board[cellNumber];
-    let neighboursR1 = getCellNeighbours(board, boardWidth, cellNumber, 1);
-    let fireNeighbours = countType(neighboursR1, "fire");
+): Cell => {
+    cell.age += 1;
 
-    if (cell.type === "tree") {
-        // If there is already some fire nearby, this tree will combust as well, as log as there are enough trees nearby
-        if (fireNeighbours >= MIN_NEEDED_FIRE) {
-            return CreateFireCell();
-        }
+    if (cell.age > cell.maxAge) {
+        return CreateAshCell();
     }
 
-    // If the cell is already a fire, clear the tile, meaning the fire has burned out
-    if (cell.type === "fire") {
-        if (cell.lifeCount > MAX_LIFE_TIME) {
-            return CreateAshCell();
-        }
-
-        cell.lifeCount++;
-    }
-
-    // No change happenend according to the rules for this cell.
-    return null;
+    return cell;
 };
