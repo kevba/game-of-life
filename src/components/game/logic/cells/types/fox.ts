@@ -20,8 +20,8 @@ export const CreateFoxCell = (): IFoxCell => {
 };
 
 const REPRODUCE_NEEDED_FOX = 2;
-const REPRODUCE_AGE = 1;
-const REPRODUCE_NEEDED_RABBITS = 4;
+const REPRODUCE_AGE = 2;
+const REPRODUCE_NEEDED_RABBITS = 3;
 
 export const reproduceFox = (
     board: Cell[],
@@ -72,19 +72,9 @@ export const simulateFox = (
 
     // If there are not enough rabbits, the fox will unfortunately starve to death.
     if (rabbitNeighbours < RABBITS_NEEDED) {
-        // The fox has a small chance to not die of starvation.
-        if (random(80 + cell.age * 10)) {
-            return CreateEmptyCell();
-        }
+        return CreateEmptyCell();
     }
 
-    cell.age += 1;
-    if (cell.age > cell.maxAge) {
-        // The fox has some chance to live past its max age.
-        if (random(80 + cell.age)) {
-            return CreateEmptyCell();
-        }
-    }
     // No Change happenend according to the rules for this cell.
     return cell;
 };

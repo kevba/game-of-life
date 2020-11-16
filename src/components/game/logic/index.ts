@@ -10,7 +10,11 @@ import { simulateVolcano } from "./cells/types/volcano";
 import { simulateWater } from "./cells/types/water";
 import { simulateRabbit } from "./cells/types/rabbit";
 import { simulateFox } from "./cells/types/fox";
-import { ILivingCell, instanceOfLivingCell } from "./cells/types/base";
+import {
+    IAgingCell,
+    ILivingCell,
+    instanceOfLivingCell,
+} from "./cells/types/base";
 import { countType, getCellNeighbours } from "./helpers";
 
 export const emptyCells = (size: number): Cell[] => {
@@ -43,12 +47,17 @@ export const simulateCell = (
 
     // These first few checks are common to a lot of cells, so instead of
     // handling them all seperately, handle them here.
-    if (checkFireIgnition(board, cell, boardWidth, cellNumber)) {
-        return CreateFireCell();
-    }
+    if (instanceOfLivingCell(cell)) {
+        if (checkFireIgnition(board, cell, boardWidth, cellNumber)) {
+            return CreateFireCell();
+        }
+        if (checkVolcanoIgnition(board, cell, boardWidth, cellNumber)) {
+            return CreateFireCell();
+        }
 
-    if (checkVolcanoIgnition(board, cell, boardWidth, cellNumber)) {
-        return CreateFireCell();
+        if (checkAgeing(board, cell, boardWidth, cellNumber)) {
+            return CreateEmptyCell();
+        }
     }
 
     switch (cell.type) {
@@ -78,14 +87,10 @@ export const simulateCell = (
 
 export const checkFireIgnition = (
     board: Cell[],
-    cell: Cell,
+    cell: ILivingCell,
     boardWidth: number,
     cellNumber: number
 ): boolean => {
-    if (!instanceOfLivingCell(cell)) {
-        return false;
-    }
-
     if (!cell.burnable) {
         return false;
     }
@@ -98,14 +103,10 @@ export const checkFireIgnition = (
 
 export const checkVolcanoIgnition = (
     board: Cell[],
-    cell: Cell,
+    cell: ILivingCell,
     boardWidth: number,
     cellNumber: number
 ): boolean => {
-    if (!instanceOfLivingCell(cell)) {
-        return false;
-    }
-
     if (!cell.burnable) {
         return false;
     }
@@ -114,4 +115,15 @@ export const checkVolcanoIgnition = (
     let volcanoNeighbours = countType(neighboursR1, "volcano");
 
     return volcanoNeighbours > 0;
+};
+
+export const checkAgeing = (
+    board: Cell[],
+    cell: ILivingCell,
+    boardWidth: number,
+    cellNumber: number
+): boolean => {
+    cell.age += 1;
+
+    return cell.age > cell.maxAge;
 };

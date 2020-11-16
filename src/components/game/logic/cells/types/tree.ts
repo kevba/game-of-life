@@ -76,16 +76,6 @@ export const simulateTree = (
         return CreateEmptyCell();
     }
 
-    cell.age += 1;
-
-    // The tree got too old, RIP.
-    if (cell.age > cell.maxAge) {
-        // The tree gets a bit of a change to live on.
-        if (random(50 + cell.age)) {
-            return CreateEmptyCell();
-        }
-    }
-
     if (cell.age == REPRODUCE_AGE) {
         if (random(50)) {
             cell.icon = evergreen;

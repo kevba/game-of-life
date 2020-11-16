@@ -86,13 +86,6 @@ export const simulateRabbit = (
         return CreateEmptyCell();
     }
 
-    cell.age += 1;
-    if (cell.age > cell.maxAge) {
-        // The rabbit has some chance to live past its max age.
-        if (random(80 + cell.age)) {
-            return CreateEmptyCell();
-        }
-    }
     // No Change happenend according to the rules for this cell.
     return cell;
 };

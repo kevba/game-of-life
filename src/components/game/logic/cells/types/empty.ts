@@ -23,9 +23,9 @@ export const simulateEmpty = (
     boardWidth: number,
     cellNumber: number
 ): Cell => {
-    const tree = reproduceTree(board, boardWidth, cellNumber);
-    if (tree !== undefined) {
-        return tree;
+    const fox = reproduceFox(board, boardWidth, cellNumber);
+    if (fox !== undefined) {
+        return fox;
     }
 
     const rabbit = reproduceRabbit(board, boardWidth, cellNumber);
@@ -33,9 +33,9 @@ export const simulateEmpty = (
         return rabbit;
     }
 
-    const fox = reproduceFox(board, boardWidth, cellNumber);
-    if (fox !== undefined) {
-        return fox;
+    const tree = reproduceTree(board, boardWidth, cellNumber);
+    if (tree !== undefined) {
+        return tree;
     }
 
     let neighboursRad1 = getCellNeighbours(board, boardWidth, cellNumber, 1);
