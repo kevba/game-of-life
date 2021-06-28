@@ -4,24 +4,22 @@ import { Cell } from '../../logic/cells';
 import { CellDisplay } from './cell';
 import { CreateEmptyCell } from '../../logic/cells/types/empty';
 import { BoardDispatch } from '../../boardReducer';
-import { CellControlContext } from '../../cellControlReducer';
 
 interface ICellContainerProps {
     cell: Cell
     cellNumber: number
+    allowOverwrite: boolean
 }
 
 export const CellContainer = (props: ICellContainerProps): React.ReactElement => {
-    const {cell, cellNumber} = props
+    const {cell, cellNumber, allowOverwrite} = props
     const boardDispatch = useContext(BoardDispatch)
-    const cellControlContext = useContext(CellControlContext)
 
-
-    const updateCell = useCallback((action: cellAction) => {        
+    const updateCell = useCallback((action: cellAction) => {
         switch(action) {
             case cellAction.Create:
-                if (cellControlContext.overwrite || cell.type === "empty") {
-                    boardDispatch({type: "setCell", cellNumber: cellNumber, cell: {...cellControlContext.cell}})
+                if (allowOverwrite || cell.type === "empty") {
+                    boardDispatch({type: "updateCellType", cellNumber: cellNumber})
                 }
 
                 break
@@ -29,7 +27,7 @@ export const CellContainer = (props: ICellContainerProps): React.ReactElement =>
                 boardDispatch({type: "setCell", cellNumber: cellNumber, cell: {...CreateEmptyCell()}})
                 break
         }
-    }, [cell, cellNumber, JSON.stringify(cellControlContext)])
+    }, [cell, cellNumber, allowOverwrite])
 
     return (
         <CellDisplay

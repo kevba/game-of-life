@@ -1,60 +1,99 @@
-import { emptyCells, simulateStep } from "./logic/index";
-import React from "react";
-import { Cell } from "./logic/cells";
+import { emptyCells, simulateStep } from './logic/index'
+import React from 'react'
+import { Cell, CellType } from './logic/cells'
+import { CreateTreeCell } from './logic/cells/types/tree'
 
-export const DEFAULT_WIDTH = 40;
+export const DEFAULT_WIDTH = 40
 
 export type BoardState = {
-    cells: Cell[];
-    width: number;
-};
+    cells: Cell[]
+    width: number
+    cellType: Cell
+    overwrite: boolean
+    enabledTypes: CellType[]
+}
 
 export type BoardAction =
-    | { type: "setCell"; cellNumber: number; cell: Cell }
-    | { type: "setWidth"; width: number }
-    | { type: "simulateStep" }
-    | { type: "reset" };
+    | { type: 'setCell'; cellNumber: number; cell: Cell }
+    | { type: 'updateCellType'; cellNumber: number }
+    | { type: 'setWidth'; width: number }
+    | { type: 'simulateStep' }
+    | { type: 'reset' }
+    | { type: 'setCellType'; cell: Cell }
+    | { type: 'setOverwrite'; overwrite: boolean }
+    | { type: 'enableCellType'; cellType: CellType; enabled: boolean }
 
-export const defaultBoard = {
+export const defaultBoard: BoardState = {
     cells: emptyCells(DEFAULT_WIDTH),
     width: DEFAULT_WIDTH,
-};
+    cellType: CreateTreeCell(),
+    overwrite: false,
+    enabledTypes: ['tree', 'water'],
+}
 
-export const boardReducer = (
-    state: BoardState,
-    action: BoardAction
-): BoardState => {
+export const BoardReducer = (state: BoardState, action: BoardAction): BoardState => {
     switch (action.type) {
-        case "setCell":
-            let newCells = [...state.cells];
-            newCells[action.cellNumber] = action.cell;
+        case 'setCell':
+            let newCells = [...state.cells]
+            newCells[action.cellNumber] = action.cell
 
             return {
                 ...state,
                 cells: newCells,
-            };
-        case "simulateStep":
-            newCells = simulateStep(state.cells, state.width);
+            }
+        case 'updateCellType':
+            newCells = [...state.cells]
+            newCells[action.cellNumber] = { ...state.cellType }
+
             return {
                 ...state,
                 cells: newCells,
-            };
-        case "reset":
+            }
+        case 'simulateStep':
+            newCells = simulateStep(state.cells, state.width)
+            return {
+                ...state,
+                cells: newCells,
+            }
+        case 'reset':
             return {
                 ...state,
                 cells: emptyCells(DEFAULT_WIDTH),
                 width: DEFAULT_WIDTH,
-            };
-        case "setWidth":
+            }
+        case 'setWidth':
             return {
                 ...state,
                 cells: emptyCells(action.width),
                 width: action.width,
-            };
-    }
-};
+            }
+        case 'setCellType':
+            return {
+                ...state,
+                cellType: { ...action.cell },
+            }
+        case 'setOverwrite':
+            return {
+                ...state,
+                overwrite: action.overwrite,
+            }
+        case 'enableCellType':
+            let enabledTypes = [...state.enabledTypes]
 
-export const BoardContext = React.createContext<BoardState>(null);
-export const BoardDispatch = React.createContext<React.Dispatch<BoardAction>>(
-    null
-);
+            if (!action.enabled) {
+                enabledTypes = state.enabledTypes.filter((c) => c !== action.cellType)
+            } else {
+                // Add the cell, and remove any duplicates
+                enabledTypes.push(action.cellType)
+                enabledTypes = [...new Set(enabledTypes)]
+            }
+
+            return {
+                ...state,
+                enabledTypes: enabledTypes,
+            }
+    }
+}
+
+export const BoardContext = React.createContext<BoardState>(null)
+export const BoardDispatch = React.createContext<React.Dispatch<BoardAction>>(null)

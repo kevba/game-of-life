@@ -34,4 +34,6 @@ export const GetCellTypes = (): Cell[] => {
     ];
 };
 
+export type CellType = Cell["type"];
+
 export const CellTypeTemplates = GetCellTypes();

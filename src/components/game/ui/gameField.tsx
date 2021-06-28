@@ -14,7 +14,7 @@ const useStyles = makeStyles({
 })
 
 export const GameField = (): React.ReactElement => {
-    const {cells, width} = useContext(BoardContext)
+    const {cells, width, overwrite} = useContext(BoardContext)
 
     const classes = useStyles()
 
@@ -27,12 +27,12 @@ export const GameField = (): React.ReactElement => {
             let rowCells = cells.slice(rowStart, rowEnd)
             
             rows.push(
-                <Row key={`row_${rowNum}`} rowNumber={rowNum} rowCells={rowCells} />
+                <Row key={`row_${rowNum}`} rowNumber={rowNum} rowCells={rowCells} allowOverwrite={overwrite}/>
             )
         }
 
         return rows
-    }, [JSON.stringify(cells)])
+    }, [overwrite, JSON.stringify(cells)])
 
     return (
         <div className={classes.root}>

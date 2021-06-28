@@ -6,6 +6,7 @@ import { Cell } from '../logic/cells';
 interface IRowProps {
     rowNumber: number;
     rowCells: Cell[];
+    allowOverwrite: boolean;
 }
 
 const useStyles = makeStyles({
@@ -16,7 +17,7 @@ const useStyles = makeStyles({
 })
 
 export const Row = (props: IRowProps): React.ReactElement => {
-    const {rowNumber, rowCells} = props
+    const {rowNumber, rowCells, allowOverwrite} = props
     const classes = useStyles()
 
     const cells = useMemo((): React.ReactElement[] => {
@@ -30,7 +31,8 @@ export const Row = (props: IRowProps): React.ReactElement => {
                 <CellContainer
                     key={`cell_${cellNum}`}
                     cellNumber={cellNum}
-                    cell={rowCells[i]} />
+                    cell={rowCells[i]}
+                    allowOverwrite={allowOverwrite} />
             )
         }
 

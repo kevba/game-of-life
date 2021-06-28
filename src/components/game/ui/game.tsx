@@ -1,40 +1,39 @@
-import React, {useContext, useEffect, useState } from 'react';
-import { GameField } from './gameField';
-import { Typography, Button, Grid, Checkbox, FormControlLabel } from '@material-ui/core';
-import { CellControlContext, CellControlDispatch } from '../cellControlReducer';
-import { BoardContext } from '../boardReducer';
-import { CellTypeTemplates } from '../logic/cells/index';
+import React, { useContext, useEffect, useState } from 'react'
+import { GameField } from './gameField'
+import { Typography, Button, Grid, Checkbox, FormControlLabel } from '@material-ui/core'
+import { BoardContext, BoardDispatch } from '../boardReducer'
+import { CellTypeTemplates } from '../logic/cells/index'
+import { Canvas } from './canvas'
 
 const DEFAULT_SPEED = 500
 const MAX_SPEED = 100
 const SPEED_STEP_SIZE = 100
 
 interface IGameProps {
-    setBoardSize: (size: number) => void;    
-    resetBoard: () => void;
-    nextStep: () => void;
-    currentStep: number;
+    setBoardSize: (size: number) => void
+    resetBoard: () => void
+    nextStep: () => void
+    currentStep: number
 }
 
 export const Game = (props: IGameProps): React.ReactElement => {
-    const {setBoardSize, resetBoard, nextStep, currentStep} = props
+    const { setBoardSize, resetBoard, nextStep, currentStep } = props
 
     const [isRunning, setIsRunning] = useState(false)
     const [speed, setSpeed] = useState(DEFAULT_SPEED)
 
-    const board = useContext(BoardContext)
-    const cellControlDispatch = useContext(CellControlDispatch)
-    const cellControlContext = useContext(CellControlContext)
+    const boardContext = useContext(BoardContext)
+    const boardDispatch = useContext(BoardDispatch)
 
     useEffect(() => {
         let timer = null
-        
+
         if (isRunning) {
-            timer = setTimeout(() => nextStep(), speed);
+            timer = setTimeout(() => nextStep(), speed)
         }
-    
-        return () => clearTimeout(timer);
-    }, [isRunning, speed, board]);
+
+        return () => clearTimeout(timer)
+    }, [isRunning, speed, boardContext])
 
     const handleSetSpeed = (speed: number) => {
         if (speed < MAX_SPEED) {
@@ -58,7 +57,7 @@ export const Game = (props: IGameProps): React.ReactElement => {
             return
         }
 
-        setBoardSize(board.width+1)
+        setBoardSize(boardContext.width + 1)
     }
 
     const handleDecreaseBoardSize = () => {
@@ -66,14 +65,14 @@ export const Game = (props: IGameProps): React.ReactElement => {
             return
         }
 
-        setBoardSize(board.width-1)
+        setBoardSize(boardContext.width - 1)
     }
 
-    const renderBoardSizeControls = ():React.ReactElement => {    
+    const renderBoardSizeControls = (): React.ReactElement => {
         return (
             <Grid container>
                 <Grid item xs={12}>
-                    <Typography variant={"subtitle1"}> Boardsize {board.width} </Typography>
+                    <Typography variant={'subtitle1'}> Boardsize {boardContext.width} </Typography>
                 </Grid>
                 <Grid item xs={6}>
                     <Button variant="contained" onClick={() => handleIncreaseBoardSize()}>
@@ -82,44 +81,44 @@ export const Game = (props: IGameProps): React.ReactElement => {
                 </Grid>
                 <Grid item xs={6}>
                     <Button variant="contained" onClick={() => handleDecreaseBoardSize()}>
-                            -
+                        -
                     </Button>
                 </Grid>
             </Grid>
         )
     }
 
-    const renderStepSpeedControls = ():React.ReactElement => {
+    const renderStepSpeedControls = (): React.ReactElement => {
         return (
             <Grid container>
                 <Grid item xs={12}>
-                    <Typography variant={"subtitle1"}> Step Speed {speed}ms </Typography>
+                    <Typography variant={'subtitle1'}> Step Speed {speed}ms </Typography>
                 </Grid>
                 <Grid item xs={6}>
-                    <Button variant="contained" onClick={() => handleSetSpeed(speed+SPEED_STEP_SIZE)}>
+                    <Button variant="contained" onClick={() => handleSetSpeed(speed + SPEED_STEP_SIZE)}>
                         +
                     </Button>
                 </Grid>
                 <Grid item xs={6}>
-                    <Button variant="contained" onClick={() => handleSetSpeed(speed-SPEED_STEP_SIZE)}>
-                            -
+                    <Button variant="contained" onClick={() => handleSetSpeed(speed - SPEED_STEP_SIZE)}>
+                        -
                     </Button>
                 </Grid>
             </Grid>
         )
     }
 
-    const renderStepControls = ():React.ReactElement => {
+    const renderStepControls = (): React.ReactElement => {
         return (
             <Grid container>
                 <Grid item xs={12}>
-                    <Typography variant={"subtitle1"}> Step {currentStep} </Typography>
+                    <Typography variant={'subtitle1'}> Step {currentStep} </Typography>
                 </Grid>
                 <Grid item xs={6}>
                     <Button variant="contained" onClick={handleStartStop}>
-                        {!isRunning ? "Start" : "Pause"}
+                        {!isRunning ? 'Start' : 'Pause'}
                     </Button>
-                    </Grid>
+                </Grid>
                 <Grid item xs={6}>
                     <Button variant="contained" onClick={handleReset}>
                         Reset
@@ -129,17 +128,17 @@ export const Game = (props: IGameProps): React.ReactElement => {
         )
     }
 
-    const renderCellTypeSelectControls = ():React.ReactElement => {
+    const renderCellTypeSelectControls = (): React.ReactElement => {
         let cellButtons: React.ReactElement[] = []
         for (let cell of CellTypeTemplates) {
-            let isSelectedType = cell.type === cellControlContext.cell.type
-        
+            let isSelectedType = cell.type === boardContext.cellType.type
+
             cellButtons.push(
-                <Grid key={cell.type} item xs={4} >
+                <Grid key={cell.type} item xs={4}>
                     <Button
-                        variant={isSelectedType ? "contained" : "outlined"}
-                        onClick={() => cellControlDispatch({type: "setCellType", cell: cell})}
-                        color={isSelectedType ? "primary" : undefined} >
+                        variant={isSelectedType ? 'contained' : 'outlined'}
+                        onClick={() => boardDispatch({ type: 'setCellType', cell: cell })}
+                        color={isSelectedType ? 'primary' : undefined}>
                         {cell.icon}
                     </Button>
                 </Grid>
@@ -147,18 +146,22 @@ export const Game = (props: IGameProps): React.ReactElement => {
         }
 
         return (
-            <Grid container direction={"row"}>
+            <Grid container direction={'row'}>
                 <Grid item xs={12}>
-                    <Typography variant={"subtitle1"}> Set cell type </Typography>
+                    <Typography variant={'subtitle1'}> Set cell type </Typography>
                 </Grid>
                 <Grid item xs={12}>
                     <FormControlLabel
                         control={
                             <Checkbox
-                            checked={cellControlContext.overwrite}
-                            onChange={() => cellControlDispatch({type: "setOverwrite", overwrite: !cellControlContext.overwrite})} />
+                                checked={boardContext.overwrite}
+                                onChange={() =>
+                                    boardDispatch({ type: 'setOverwrite', overwrite: !boardContext.overwrite })
+                                }
+                            />
                         }
-                        label="Overwrite cells" />
+                        label="Overwrite cells"
+                    />
                 </Grid>
                 {cellButtons}
             </Grid>
@@ -167,7 +170,7 @@ export const Game = (props: IGameProps): React.ReactElement => {
 
     const renderControls = (): React.ReactElement => {
         return (
-            <Grid container direction={"column"} justify={"flex-start"} alignContent={"space-around"}>
+            <Grid container direction={'column'} justify={'flex-start'} alignContent={'space-around'}>
                 <Grid item xs={12}>
                     {renderStepControls()}
                 </Grid>
@@ -185,19 +188,18 @@ export const Game = (props: IGameProps): React.ReactElement => {
     }
 
     return (
-        <Grid container justify={"center"}>
+        <Grid container justify={'center'}>
             <Grid item xs={12}>
-                <Typography variant={"h3"}> Game of life </Typography>
+                <Typography variant={'h3'}> Game of life </Typography>
             </Grid>
 
             <Grid item xs={3}>
                 {renderControls()}
             </Grid>
-            
-            <Grid item xs={9} >
-                <GameField />
-            </Grid>
 
+            <Grid item xs={9}>
+                <Canvas />
+            </Grid>
         </Grid>
     )
 }
