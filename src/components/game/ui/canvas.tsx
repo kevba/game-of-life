@@ -109,7 +109,7 @@ const canvasCells = (width: number, cells: Cell[], context: CanvasRenderingConte
     context.font = `${offsetSize - 2}px Arial`
 
     let y = 1
-    let x = 1
+    let x = 0
 
     for (let cell of cells) {
         context.fillText(cell.icon, x * offsetSize, y * offsetSize)
