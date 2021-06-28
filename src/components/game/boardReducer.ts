@@ -2,6 +2,7 @@ import { emptyCells, simulateStep } from './logic/index'
 import React from 'react'
 import { Cell, CellType } from './logic/cells'
 import { CreateTreeCell } from './logic/cells/types/tree'
+import { randomCells } from './logic/boardgen'
 
 export const DEFAULT_WIDTH = 40
 
@@ -9,7 +10,6 @@ export type BoardState = {
     cells: Cell[]
     width: number
     cellType: Cell
-    overwrite: boolean
     enabledTypes: CellType[]
 }
 
@@ -20,14 +20,12 @@ export type BoardAction =
     | { type: 'simulateStep' }
     | { type: 'reset' }
     | { type: 'setCellType'; cell: Cell }
-    | { type: 'setOverwrite'; overwrite: boolean }
     | { type: 'enableCellType'; cellType: CellType; enabled: boolean }
 
 export const defaultBoard: BoardState = {
-    cells: emptyCells(DEFAULT_WIDTH),
+    cells: randomCells(DEFAULT_WIDTH),
     width: DEFAULT_WIDTH,
     cellType: CreateTreeCell(),
-    overwrite: false,
     enabledTypes: ['tree', 'water'],
 }
 
@@ -71,11 +69,6 @@ export const BoardReducer = (state: BoardState, action: BoardAction): BoardState
             return {
                 ...state,
                 cellType: { ...action.cell },
-            }
-        case 'setOverwrite':
-            return {
-                ...state,
-                overwrite: action.overwrite,
             }
         case 'enableCellType':
             let enabledTypes = [...state.enabledTypes]
