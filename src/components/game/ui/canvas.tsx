@@ -1,18 +1,40 @@
-import React, { useContext, useRef } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 import { BoardContext, BoardDispatch } from '../boardReducer'
 import { Cell } from '../logic/cells'
 
-const CANVAS_WIDTH = 600
+const CANVAS_WIDTH = 900
 
 export const Canvas = () => {
+    const [drawing, setDrawing] = useState(false)
+
     const { cells, width } = useContext(BoardContext)
     const boardDispatch = useContext(BoardDispatch)
 
     const canvasRef = React.useRef<HTMLCanvasElement>(null)
     const [context, setContext] = React.useState<CanvasRenderingContext2D | null>(null)
 
-    const handleSetCell = (x: number, y: number) => {
-        const cellNumber = x + y * width
+    const handleMouseDown = () => {
+        setDrawing(true)
+        console.log(drawing)
+    }
+
+    const handleMouseUp = () => {
+        setDrawing(false)
+    }
+
+    const handleMouseMove = (e: MouseEvent) => {
+        if (!drawing) {
+            return
+        }
+
+        let x = e.offsetX
+        let y = e.offsetY
+        let offsetFactor = width / CANVAS_WIDTH
+
+        const actualX = Math.floor(x * offsetFactor)
+        const actualY = Math.floor(y * offsetFactor)
+        const cellNumber = actualX + actualY * width
+        console.log(e.offsetX, e.offsetY, drawing, cellNumber)
         boardDispatch({ type: 'updateCellType', cellNumber: cellNumber })
     }
 
@@ -24,14 +46,37 @@ export const Canvas = () => {
         if (renderCtx) {
             setContext(renderCtx)
         }
+    }, [context])
 
+    React.useEffect(() => {
         if (context === null) {
             return
         }
 
-        canvasGrid(width, context)
+        context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_WIDTH)
+        // canvasGrid(width, context)
         canvasCells(width, cells, context)
     }, [context, width, cells])
+
+    React.useEffect(() => {
+        if (context === null) {
+            return
+        }
+
+        canvasRef.current.addEventListener('mousedown', handleMouseDown)
+        canvasRef.current.addEventListener('mouseup', handleMouseUp)
+        canvasRef.current.addEventListener('mousemove', handleMouseMove)
+        canvasRef.current.addEventListener('mouseleave', handleMouseUp)
+
+        return () => {
+            if (context) {
+                canvasRef.current.removeEventListener('mousedown', handleMouseDown)
+                canvasRef.current.removeEventListener('mouseup', handleMouseUp)
+                canvasRef.current.removeEventListener('mousemove', handleMouseMove)
+                canvasRef.current.removeEventListener('mouseleave', handleMouseUp)
+            }
+        }
+    }, [context, width, drawing])
 
     return (
         <canvas
@@ -47,8 +92,6 @@ export const Canvas = () => {
 }
 
 const canvasGrid = (width: number, context: CanvasRenderingContext2D) => {
-    context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_WIDTH)
-
     let offsetSize = CANVAS_WIDTH / width
     for (let x = 1; x < width; x++) {
         let offset = offsetSize * x
@@ -63,15 +106,18 @@ const canvasGrid = (width: number, context: CanvasRenderingContext2D) => {
 
 const canvasCells = (width: number, cells: Cell[], context: CanvasRenderingContext2D) => {
     let offsetSize = CANVAS_WIDTH / width
-    let y = 0
-    let x = 0
+    context.font = `${offsetSize - 2}px Arial`
+
+    let y = 1
+    let x = 1
 
     for (let cell of cells) {
-        context.fillText(cell.icon, x, y, offsetSize)
-        x = x++
+        context.fillText(cell.icon, x * offsetSize, y * offsetSize)
+
+        x = x + 1
         if (x >= width) {
             x = 0
-            y = y++
+            y = y + 1
         }
     }
 }

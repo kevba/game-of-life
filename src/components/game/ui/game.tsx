@@ -4,9 +4,9 @@ import { BoardContext, BoardDispatch } from '../boardReducer'
 import { CellTypeTemplates } from '../logic/cells/index'
 import { Canvas } from './canvas'
 
-const DEFAULT_SPEED = 500
-const MAX_SPEED = 100
-const SPEED_STEP_SIZE = 100
+const DEFAULT_SPEED = 200
+const MAX_SPEED = 10
+const SPEED_STEP_SIZE = 10
 
 interface IGameProps {
     setBoardSize: (size: number) => void
@@ -179,11 +179,11 @@ export const Game = (props: IGameProps): React.ReactElement => {
                 <Typography variant={'h3'}> Game of life </Typography>
             </Grid>
 
-            <Grid item xs={3}>
+            <Grid item xs={2}>
                 {renderControls()}
             </Grid>
 
-            <Grid item xs={9}>
+            <Grid item xs={10}>
                 <Canvas />
             </Grid>
         </Grid>

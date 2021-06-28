@@ -4,7 +4,7 @@ import { Cell, CellType } from './logic/cells'
 import { CreateTreeCell } from './logic/cells/types/tree'
 import { randomCells } from './logic/boardgen'
 
-export const DEFAULT_WIDTH = 40
+export const DEFAULT_WIDTH = 100
 
 export type BoardState = {
     cells: Cell[]
